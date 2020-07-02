@@ -54,3 +54,8 @@ https://stackoverflow.com/questions/25098021/securityerror-blocked-a-frame-with-
 
 https://stackoverflow.com/questions/13851157/oauth2-and-google-api-access-token-expiration-time
 
+https://jsmanifest.com/create-react-chrome-extension-filtering-youtube-video-results/
+
+https://github.com/jsmanifest/react-chrome-ext/blob/master/public/manifest.json
+
+https://dev.to/bayardlouis470/create-chrome-extension-in-react-3pna
