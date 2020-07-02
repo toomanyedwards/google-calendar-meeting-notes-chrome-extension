@@ -18,5 +18,15 @@
       "128": "google-doc-128.png"
     },
     "default_popup": "index.html"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "/static/js/2.chunk.js",
+        "/static/js/main.chunk.js",
+        "/static/js/runtime-main.js"
+      ]
+    }
+  ]
 }

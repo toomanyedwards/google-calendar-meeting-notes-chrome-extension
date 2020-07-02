@@ -4,11 +4,17 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+const rootEl = document.createElement('div')
+rootEl.id = 'google-calendar-meeting-notes-chrome-extension'
+document.body.appendChild(rootEl)
+
+console.log("Hello, world!");
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  rootEl
 );
 
 // If you want your app to work offline and load faster, you can change
