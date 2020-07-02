@@ -4,11 +4,19 @@
   "manifest_version": 2,
   "description": "Adds notes to Google Calendar meeting descriptions",
   "icons": {
-      "512": "logo512.png"
+    "16": "google-doc-16.png",
+    "32": "google-doc-32.png",
+    "48": "google-doc-48.png",
+    "128": "google-doc-128.png"
   },
   "content_security_policy": "script-src 'self' 'sha256-GFLQ2733vt3UkgurDY9OfiVGDs5K8mBrmCvxlPuYmuE='; object-src 'self'",
   "browser_action": {
-      "default_icon": "logo512.png",
-      "default_popup": "index.html"
+    "default_icon": {
+      "16": "google-doc-16.png",
+      "32": "google-doc-32.png",
+      "48": "google-doc-48.png",
+      "128": "google-doc-128.png"
+    },
+    "default_popup": "index.html"
   }
 }
