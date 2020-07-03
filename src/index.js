@@ -4,20 +4,54 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-const rootEl = document.createElement('div')
-rootEl.id = 'google-calendar-meeting-notes-chrome-extension'
-document.body.appendChild(rootEl)
+const getMeetingNotesAnchor = () => {
+  var nodeList = document.querySelectorAll("a[href*='meetingNotesExt']");
+  if(nodeList && nodeList[0]) {
+      console.log(`foo: ${JSON.stringify(nodeList[0])}`)
+      return nodeList[0];
+  }
+}
 
-console.log("Hello, world!");
+const getEventDetailsTabPanel = () => {
+  return document.getElementById("tabEventDetails");
+}
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  rootEl
+const getAddMeetingNotesButton = () => {
+  return document.getElementById("add_meeting_notes_button");
+}
+
+const insertAddMeetingNotesButton = (eventDetailsTabPanel) => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    eventDetailsTabPanel
+  );
+}
+
+/**
+ * Document mutation obeserver
+ */
+var observer = new MutationObserver(
+  (mutations) => {  
+      mutations.forEach(
+          () => {
+              console.log("mutation");
+              const eventDetailsTabPanel = getEventDetailsTabPanel();
+              if( getEventDetailsTabPanel() ) {
+                  console.log("Found events details tab panel");
+                  if( !getAddMeetingNotesButton() ) {
+                    console.log("Did not find meeting notes button");
+                    insertAddMeetingNotesButton(eventDetailsTabPanel);
+                  }
+              }
+          }
+      )
+  }    
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const target = document.querySelector("body");
+const config = { childList:true, subtree:true};
+
+// Initialize the DOM mutation observer
+observer.observe(target, config);
