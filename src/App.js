@@ -2,10 +2,11 @@ import React from 'react';
 import AddMeetingNotesButtonContainer from './AddMeetingNotesButtonContainer.js'
 import './App.css';
 
-function App() {
+const App = props => {
   console.log("App!!!!!");
   return (
-    <AddMeetingNotesButtonContainer/>)
+    <AddMeetingNotesButtonContainer/>
+  )
   
 }
 

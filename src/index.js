@@ -35,7 +35,7 @@ const insertMeetingNotesButtonContainerReactInjectionEl = (meetingNotesButtonCon
   );
 }
 
-const getEventDetailsTabPanel = () => {
+const getEventDetailsTabPanelEl = () => {
   return document.getElementById("tabEventDetails");
 }
 
@@ -43,7 +43,7 @@ const getAddMeetingNotesButton = () => {
   return document.getElementById("add_meeting_notes_button");
 }
 
-const insertReactAddMeetingNotesButtonContainer = (injectionEl) => {
+const insertReactAddMeetingNotesButtonContainer = (injectionEl, meetingDescriptionEl) => {
   ReactDOM.render(
     <React.StrictMode>
       <App />
@@ -52,7 +52,13 @@ const insertReactAddMeetingNotesButtonContainer = (injectionEl) => {
   );
 }
 
-
+const getMeetingDescriptionEl = () => {
+  var nodeList = document.querySelectorAll("div[id*='T2Ybvb']");
+  if(nodeList && nodeList[0]) {
+      console.log(`getMeetingDescriptionEl: ${JSON.stringify(nodeList[0])}`)
+      return nodeList[0];
+  }
+}
 
 
 /**
@@ -62,19 +68,28 @@ var observer = new MutationObserver(
   (mutations) => {  
       mutations.forEach(
           () => {
-              console.log("mutation");
-              // Look for the event details tab panel
-              const eventDetailsTabPanel = getEventDetailsTabPanel();
-              // If we found the event details tab panel...
-              if( eventDetailsTabPanel ) {
-                  console.log("Found events details tab panel");
-                  // If the element where the react meeting notes button container should be injected can't be found...
-                  if( !getMeetingNotesButtonContainerReactInjectionEl() ) {
-                    // Insert it
-                    const addMeetingNotesButtonContainerReactInjectionEl = insertMeetingNotesButtonContainerReactInjectionEl(eventDetailsTabPanel)
+            console.log("mutation");
+
+            // If the react injection point doesn't exist yet...
+            if( !getMeetingNotesButtonContainerReactInjectionEl() ) {
+              
+              // Look for the event details tab panel element 
+              const eventDetailsTabPanelEl = getEventDetailsTabPanelEl();
+
+              // Look for the meeting details element 
+              const meetingDescriptionEl = getMeetingDescriptionEl();
+
+              if( eventDetailsTabPanelEl && meetingDescriptionEl) {
+                  console.log("Inserting react injection point");
+                  
+                  // Insert it
+                  const addMeetingNotesButtonContainerReactInjectionEl = insertMeetingNotesButtonContainerReactInjectionEl(eventDetailsTabPanelEl)
 
                     // Insert the react meeting notes button container
-                    insertReactAddMeetingNotesButtonContainer( getMeetingNotesButtonContainerReactInjectionEl() );  
+                    insertReactAddMeetingNotesButtonContainer( 
+                      getMeetingNotesButtonContainerReactInjectionEl(),
+                      meetingDescriptionEl
+                    );  
                   }
               }
           }
