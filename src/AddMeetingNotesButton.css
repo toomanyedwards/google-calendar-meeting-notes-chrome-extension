@@ -1,14 +1,4 @@
-import React from 'react';
-import styled from 'styled-components'
-
-import './AddMeetingNotesButton.css';
-
- 
-const AddMeetingNotesButton = ({className}) => {
-  return <button id="add_meeting_notes_button" class={className}>Add Meeting Notes</button>
-};
-
-const StyledAddMeetingNotesButton = styled(AddMeetingNotesButton)`
+#add-meeting-notes-button {
     display: inline-block;
     background-color: rgb(14, 114, 237);
     color: rgb(255, 255, 255);
@@ -22,6 +12,4 @@ const StyledAddMeetingNotesButton = styled(AddMeetingNotesButton)`
     border-image: initial;
     padding: 0px 16px;
     border-radius: 4px;
-`
-
-export default StyledAddMeetingNotesButton;
+}
