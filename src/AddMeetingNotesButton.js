@@ -19,6 +19,11 @@ const StyledAddMeetingNotesButton = styled(AddMeetingNotesButton)`
     border-image: initial;
     padding: 0px 16px;
     border-radius: 4px;
-`
+
+    &:hover {
+        background-color: rgb(66, 133, 244);
+        cursor: pointer;
+      }
+`;
 
 export default StyledAddMeetingNotesButton;
