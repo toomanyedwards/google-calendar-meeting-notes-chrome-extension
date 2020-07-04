@@ -13,7 +13,9 @@ const AddMeetingNotesButtonContainer = ({iconUrl}) =>
                 </div>
             </span>
         </div>
-        <AddMeetingNotesButon/>
+        <div class="j3nyw">
+            <AddMeetingNotesButon/>
+        </div>
     </div>
  
 export default AddMeetingNotesButtonContainer;
