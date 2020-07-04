@@ -10,7 +10,24 @@
     "48": "google-doc-48.png",
     "128": "google-doc-128.png"
   },
-  "content_security_policy": "script-src 'self' 'sha256-GFLQ2733vt3UkgurDY9OfiVGDs5K8mBrmCvxlPuYmuE='; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
+  "oauth2": {
+    "client_id": "370393194814-avjjeu46inmjr38cku9312crolphgftt.apps.googleusercontent.com",
+    "scopes":[
+      "https://www.googleapis.com/auth/drive"
+    ]
+  },
+  "permissions": [
+    "identity",
+    "identity.email",
+    "activeTab",
+    "declarativeContent",
+    "storage",
+    "contextMenus",
+    "bookmarks",
+    "*://www.googleapis.com/*",
+    "*://accounts.google.com/*"
+  ],
   "browser_action": {
     "default_icon": {
       "16": "google-doc-16.png",
@@ -22,7 +39,8 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": [ "https://www.google.com/calendar/*", "https://calendar.google.com/calendar/*"],
+      "run_at": "document_idle",
       "js": [
         "/static/js/2.chunk.js",
         "/static/js/main.chunk.js",
@@ -30,6 +48,10 @@
       ]
     }
   ],
+  "background": {
+    "page": "background.html",
+    "persistent": false
+},
   "web_accessible_resources": [
     "*.png"
   ]
