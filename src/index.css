@@ -11,19 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-#add_meeting_notes_button {
-  display: inline-block;
-  background-color: rgb(14, 114, 237);
-  color: rgb(255, 255, 255);
-  line-height: 36px;
-  font-family: "Google Sans", Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  border-width: 0px;
-  border-style: initial;
-  border-color: initial;
-  border-image: initial;
-  padding: 0px 16px;
-  border-radius: 4px;
-}

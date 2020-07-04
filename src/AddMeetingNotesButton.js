@@ -1,8 +1,5 @@
 import React from 'react';
 import styled from 'styled-components'
-
-import './AddMeetingNotesButton.css';
-
  
 const AddMeetingNotesButton = ({className}) => {
   return <button id="add_meeting_notes_button" class={className}>Add Meeting Notes</button>
