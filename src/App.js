@@ -5,7 +5,7 @@ import './App.css';
 const App = props => {
   console.log("App!!!!!");
   return (
-    <AddMeetingNotesButtonContainer/>
+    <AddMeetingNotesButtonContainer props={props}/>
   )
   
 }

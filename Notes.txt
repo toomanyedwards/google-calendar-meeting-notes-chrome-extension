@@ -59,3 +59,11 @@ https://jsmanifest.com/create-react-chrome-extension-filtering-youtube-video-res
 https://github.com/jsmanifest/react-chrome-ext/blob/master/public/manifest.json
 
 https://dev.to/bayardlouis470/create-chrome-extension-in-react-3pna
+
+https://stackoverflow.com/questions/61846918/load-image-from-project-in-react-chrome-extension
+
+https://developer.chrome.com/extensions/manifest/web_accessible_resources
+
+https://blog.usejournal.com/making-an-interactive-chrome-extension-with-react-524483d7aa5d
+
+https://github.com/ctrobins/headline-fetcher

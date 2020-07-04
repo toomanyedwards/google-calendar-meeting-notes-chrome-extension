@@ -1,3 +1,6 @@
+/*global chrome*/
+
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -44,9 +47,11 @@ const getAddMeetingNotesButton = () => {
 }
 
 const insertReactAddMeetingNotesButtonContainer = (injectionEl, meetingDescriptionEl) => {
+  const addMeetingNotesButtonIconUrl = chrome.runtime.getURL("images/myimage.png");
+  console.log(`addMeetingNotesButtonIconUrl: ${addMeetingNotesButtonIconUrl}`);
   ReactDOM.render(
     <React.StrictMode>
-      <App />
+      <App props={addMeetingNotesButtonIconUrl}/>
     </React.StrictMode>,
     injectionEl
   );
