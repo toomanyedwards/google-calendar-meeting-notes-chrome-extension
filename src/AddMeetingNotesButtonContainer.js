@@ -4,7 +4,7 @@ import React from 'react';
 import AddMeetingNotesButon from './AddMeetingNotesButton.js'
 
  
-const AddMeetingNotesButtonContainer = ({iconUrl}) => 
+const AddMeetingNotesButtonContainer = props => 
     <div class="FrSOzf">	
         <div aria-hidden="true" class="tzcF6">
             <span class="DPvwYc uSx8Od" aria-hidden="true">
@@ -14,7 +14,7 @@ const AddMeetingNotesButtonContainer = ({iconUrl}) =>
             </span>
         </div>
         <div class="j3nyw">
-            <AddMeetingNotesButon/>
+            <AddMeetingNotesButon {...props}/>
         </div>
     </div>
  

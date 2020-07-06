@@ -47,11 +47,9 @@ const getAddMeetingNotesButton = () => {
 }
 
 const insertReactAddMeetingNotesButtonContainer = (injectionEl, meetingDescriptionEl) => {
-  const addMeetingNotesButtonIconUrl = chrome.runtime.getURL("images/myimage.png");
-  console.log(`addMeetingNotesButtonIconUrl: ${addMeetingNotesButtonIconUrl}`);
   ReactDOM.render(
     <React.StrictMode>
-      <App props={addMeetingNotesButtonIconUrl}/>
+      <App meetingDescriptionEl={meetingDescriptionEl}/>
     </React.StrictMode>,
     injectionEl
   );

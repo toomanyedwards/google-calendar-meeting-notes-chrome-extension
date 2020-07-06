@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, {css} from 'styled-components'
  
-const AddMeetingNotesButton = ({className}) => {
+const AddMeetingNotesButton = ({className, meetingDescriptionEl}) => {  
   return <button id="add_meeting_notes_button" class={className} >Add Meeting Notes</button>
 };
 
