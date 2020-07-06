@@ -8,7 +8,7 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
       id="add_meeting_notes_button" 
       onClick={
         ()=>{
-          addMeetingNotes("", getMeetingTitle());
+          addMeetingNotes(getMeetingDescriptionEl(), getMeetingTitle());
         }
       } 
       class={className}>Add Meeting Notes

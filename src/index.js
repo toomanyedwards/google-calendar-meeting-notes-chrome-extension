@@ -53,7 +53,7 @@ const getMeetingTitle = () => {
 const insertReactAddMeetingNotesButtonContainer = (injectionEl, meetingDescriptionEl) => {
   ReactDOM.render(
     <React.StrictMode>
-      <App meetingDescriptionEl={meetingDescriptionEl} getMeetingTitle={getMeetingTitle}/>
+      <App getMeetingDescriptionEl={getMeetingDescriptionEl} getMeetingTitle={getMeetingTitle}/>
     </React.StrictMode>,
     injectionEl
   );
