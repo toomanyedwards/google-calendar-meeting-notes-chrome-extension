@@ -1,11 +1,55 @@
+/*global chrome*/
 import React from 'react';
 import styled, {css} from 'styled-components'
  
 const AddMeetingNotesButton = ({className, meetingDescriptionEl}) => {  
-  return <button id="add_meeting_notes_button" class={className} >Add Meeting Notes</button>
+  return <button id="add_meeting_notes_button" onClick={()=> {handleClick(meetingDescriptionEl)}} class={className} >Add Meeting Notes</button>
 };
 
+const handleClick = (meetingDescriptionEl) => {
+  console.log(`handling click`)
 
+  chrome.runtime.sendMessage(
+    {
+        message:"TEST",//ADD_NOTES_BUTTON_CLICKED_MSG,
+        meetingTitle: "Foo"//getMeetingNotesTitle()
+    }, 
+    (response) => {
+        console.log('addMeetingNotesButton clicked response', response);
+        /*
+        if(response.meetingNotesDocUrl) {
+            console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
+            addNotesDocToMeetingDescription(response.meetingNotesDocUrl)
+        } else {
+
+        }
+        */
+    }
+);
+}
+
+/*
+"click", () => {
+  addMeetingNotesButton.disabled = true;
+  console.log("addMeetingNotesButton clicked")
+  chrome.runtime.sendMessage(
+      {
+          message:ADD_NOTES_BUTTON_CLICKED_MSG,
+          meetingTitle: getMeetingNotesTitle()
+      }, 
+      (response) => {
+          console.log('addMeetingNotesButton clicked response', response);
+          if(response.meetingNotesDocUrl) {
+              console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
+              addNotesDocToMeetingDescription(response.meetingNotesDocUrl)
+          } else {
+
+          }
+      }
+  );
+}
+
+*/
 const StyledAddMeetingNotesButton = styled(AddMeetingNotesButton)`
     display: inline-block;
     color: rgb(255, 255, 255);
