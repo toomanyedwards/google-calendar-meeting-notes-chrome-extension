@@ -1,18 +1,128 @@
 /*global chrome*/
 import React from 'react';
 import styled, {css} from 'styled-components'
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+
+import FormLabel from '@material-ui/core/FormLabel';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Select from '@material-ui/core/Select';
+
+
+
  
 const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTitle}) => {  
-  return (
-    <button 
-      id="add_meeting_notes_button" 
-      onClick={
+  const [addMeetingNotesDialogOpen, setAddMeetingNotesDialogOpen] = React.useState(false);
+
+  const openAddMeetingNotesDialog = () => {
+    setAddMeetingNotesDialogOpen(true);
+  };
+
+
+  /*
+  onClick={
         ()=>{
           addMeetingNotes(getMeetingDescriptionEl(), getMeetingTitle());
         }
       } 
-      class={className}>Add Meeting Notes
-    </button>
+
+  */
+
+  const closeAddMeetingNotesDialog = () => {
+    setAddMeetingNotesDialogOpen(false);
+  };
+
+  return (
+    <div>
+      <button 
+        id="add_meeting_notes_button" 
+        onClick={openAddMeetingNotesDialog}
+        class={className}>Add Meeting Notes
+      </button>
+      <Dialog maxWidth="lg" open={addMeetingNotesDialogOpen}  aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Add Meeting Notes</DialogTitle>
+        <DialogContent>
+          
+        <Box my={2}>
+        <FormControl fullWidth={true} margin="normal">
+        <FormLabel component="legend">Notes Template</FormLabel>
+          <Select
+            labelId="demo-simple-select-placeholder-label-label"
+            id="demo-simple-select-placeholder-label"
+            value=""
+            
+            displayEmpty
+            
+          >
+            <MenuItem value="">
+              <em>Select a template</em>
+            </MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+        </FormControl>
+        </Box>
+        <Box my={2}>
+        <FormControl fullWidth={true} >
+        <FormLabel component="legend">Notes Folder</FormLabel>
+          <Select
+            labelId="demo-simple-select-placeholder-label-label"
+            id="demo-simple-select-placeholder-label"
+            value=""
+            
+            displayEmpty
+            
+          >
+            <MenuItem value="">
+              <em>Select a folder</em>
+            </MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+        </FormControl>    
+        </Box>
+
+
+
+        
+
+          
+        <Box my={2}>
+          <FormLabel component="legend">Sharing</FormLabel>
+          <RadioGroup aria-label="gender" name="gender1" value={"private"} >
+            <FormControlLabel value="private" control={<Radio />} label="Private" />
+            <FormControlLabel value="domain" control={<Radio />} label="Domain" />
+            <FormControlLabel value="public" control={<Radio />} label="Public" />
+            
+          </RadioGroup>
+          </Box>
+        </DialogContent>
+        
+        <DialogActions>
+          <Button  onClick={closeAddMeetingNotesDialog} color="primary">
+            Cancel
+          </Button>
+          <Button color="primary">
+            Add Notes
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+    </div>
   )
 };
 
