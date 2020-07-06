@@ -25,40 +25,44 @@ const addMeetingNotes = (meetingDescriptionEl, meetingTitle) => {
     }, 
     (response) => {
         console.log('addMeetingNotesButton clicked response', response);
-        /*
+        
         if(response.meetingNotesDocUrl) {
-            console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
-            addNotesDocToMeetingDescription(response.meetingNotesDocUrl)
+            // console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
+            addNotesDocToMeetingDescription(meetingDescriptionEl, response.meetingNotesDocUrl)
         } else {
 
         }
-        */
+        
     }
-);
-}
-
-/*
-"click", () => {
-  addMeetingNotesButton.disabled = true;
-  console.log("addMeetingNotesButton clicked")
-  chrome.runtime.sendMessage(
-      {
-          message:ADD_NOTES_BUTTON_CLICKED_MSG,
-          meetingTitle: getMeetingNotesTitle()
-      }, 
-      (response) => {
-          console.log('addMeetingNotesButton clicked response', response);
-          if(response.meetingNotesDocUrl) {
-              console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
-              addNotesDocToMeetingDescription(response.meetingNotesDocUrl)
-          } else {
-
-          }
-      }
   );
 }
 
-*/
+const getAddDescriptionDiv = () => {
+  var nodeList = document.querySelectorAll("div[jsname='V67aGc']");
+  if(nodeList && nodeList[0]) {
+      console.log(`foo: ${JSON.stringify(nodeList[0])}`)
+      return nodeList[0];
+  }
+}
+
+const removeAddDescriptionDiv = () => {
+  const addDescriptionDiv = getAddDescriptionDiv();
+  
+  if(addDescriptionDiv) {
+      console.log(`addDescriptionDiv: ${addDescriptionDiv}`);
+      addDescriptionDiv.remove();
+  }
+}
+
+const addNotesDocToMeetingDescription = (meetingDescriptionEl, meetingNotesDocUrl) => {
+  removeAddDescriptionDiv();
+
+  meetingDescriptionEl.insertAdjacentHTML('afterbegin', 
+  `<div>Meeting Notes: <a id='foo' href='${meetingNotesDocUrl}&meetingNotesExt='true'>${meetingNotesDocUrl}</a><div>`  
+  );
+}
+
+
 const StyledAddMeetingNotesButton = styled(AddMeetingNotesButton)`
     display: inline-block;
     color: rgb(255, 255, 255);
