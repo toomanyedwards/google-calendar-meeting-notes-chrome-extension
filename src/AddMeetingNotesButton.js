@@ -2,17 +2,26 @@
 import React from 'react';
 import styled, {css} from 'styled-components'
  
-const AddMeetingNotesButton = ({className, meetingDescriptionEl}) => {  
-  return <button id="add_meeting_notes_button" onClick={()=> {handleClick(meetingDescriptionEl)}} class={className} >Add Meeting Notes</button>
+const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTitle}) => {  
+  return (
+    <button 
+      id="add_meeting_notes_button" 
+      onClick={
+        ()=>{
+          addMeetingNotes("", getMeetingTitle());
+        }
+      } 
+      class={className}>Add Meeting Notes
+    </button>
+  )
 };
 
-const handleClick = (meetingDescriptionEl) => {
-  console.log(`handling click`)
+const addMeetingNotes = (meetingDescriptionEl, meetingTitle) => {
+  console.log(`Meeting title: ${meetingTitle}`)
 
   chrome.runtime.sendMessage(
     {
-        message:"TEST",//ADD_NOTES_BUTTON_CLICKED_MSG,
-        meetingTitle: "Foo"//getMeetingNotesTitle()
+        meetingTitle: meetingTitle
     }, 
     (response) => {
         console.log('addMeetingNotesButton clicked response', response);

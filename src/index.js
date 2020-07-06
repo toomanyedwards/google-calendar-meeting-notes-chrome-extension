@@ -46,10 +46,14 @@ const getAddMeetingNotesButton = () => {
   return document.getElementById("add_meeting_notes_button");
 }
 
+const getMeetingTitle = () => {
+  return document.getElementById("xTiIn").getAttribute("data-initial-value")
+}
+
 const insertReactAddMeetingNotesButtonContainer = (injectionEl, meetingDescriptionEl) => {
   ReactDOM.render(
     <React.StrictMode>
-      <App meetingDescriptionEl={meetingDescriptionEl}/>
+      <App meetingDescriptionEl={meetingDescriptionEl} getMeetingTitle={getMeetingTitle}/>
     </React.StrictMode>,
     injectionEl
   );
