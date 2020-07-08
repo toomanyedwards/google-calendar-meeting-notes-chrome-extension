@@ -136,12 +136,14 @@ const showAddMeetinNotesButton = () => {
 }
 
 
+/**
+ * Handle escape key
+ */
 window.addEventListener("keydown", function(event) {
     if(event.keyCode === 27){
       console.log("escape key pressed")
       window.alert(`esc: ${event.cancelable}`)
       event.preventDefault();
-      //event.stopPropagation();
       event.stopImmediatePropagation();
       event.cancelBubble = true;
     }
