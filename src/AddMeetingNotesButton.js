@@ -32,6 +32,31 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
     setAddMeetingNotesDialogOpen(true);
   };
 
+  const addMeetingNotes = (meetingDescriptionEl, meetingTitle) => {
+    console.log(`Meeting title: ${meetingTitle}`)
+  
+    new Promise(
+      (resolve) => {
+        chrome.runtime.sendMessage(
+          {
+              meetingTitle: meetingTitle
+          }, 
+          (response) => {
+            setAddingMeetingNotes(false);
+
+              console.log('addMeetingNotesButton clicked response', response);
+              
+              if(response.meetingNotesDocUrl) {
+                  // console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
+                  addNotesDocToMeetingDescription(meetingDescriptionEl, response.meetingNotesDocUrl)
+              } else {
+  
+              }
+            }
+        )  
+      }
+    );
+  }
 
   /*
   onClick={
@@ -46,10 +71,22 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
     setAddMeetingNotesDialogOpen(false);
   };
 
-  const addMeetingNotes = () => {
+  const handleAddMeetingNotesButtonPressed = () => {
     setAddMeetingNotesDialogOpen(false);
     setAddingMeetingNotes(true);
+    test();
+    
+    //await addMeetingNotes(getMeetingDescriptionEl(), getMeetingTitle());
+    //setAddingMeetingNotes(false);
   };
+
+  const test = async () => {
+    
+    await addMeetingNotes(getMeetingDescriptionEl(), getMeetingTitle());
+    
+
+  }
+
   return (
     <div>
       <button 
@@ -79,18 +116,6 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
       <Dialog maxWidth="lg" open={addMeetingNotesDialogOpen}  aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Add Meeting Notes</DialogTitle>
         <DialogContent>
-        <div style={{
-          position: 'relative',
-          display:'flex',
-          width:"100%",
-          justifyContent: 'center'
-  
-      }}>
-        
-        <CircularProgress />
-        </div>
-          
-        
           
         <Box my={2}>
         <FormControl fullWidth={true} margin="normal">
@@ -153,7 +178,7 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
           <Button  onClick={cancelAddMeetingNotesDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={addMeetingNotes} color="primary">
+          <Button onClick={handleAddMeetingNotesButtonPressed} color="primary">
             Add Notes
           </Button>
         </DialogActions>
@@ -163,26 +188,22 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
   )
 };
 
-const addMeetingNotesFoo = (meetingDescriptionEl, meetingTitle) => {
-  console.log(`Meeting title: ${meetingTitle}`)
-
-  chrome.runtime.sendMessage(
-    {
-        meetingTitle: meetingTitle
-    }, 
-    (response) => {
-        console.log('addMeetingNotesButton clicked response', response);
-        
-        if(response.meetingNotesDocUrl) {
-            // console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
-            addNotesDocToMeetingDescription(meetingDescriptionEl, response.meetingNotesDocUrl)
-        } else {
-
+const getChromeUserToken = () => 
+  new Promise(
+    (resolve) => {
+      chrome.identity.getAuthToken(
+        {interactive: true},
+        (token) => {
+          console.log(`Chrome user token is: ${token}`)
+          resolve(token)
         }
-        
+      )
     }
   );
-}
+
+
+
+
 
 const getAddDescriptionDiv = () => {
   var nodeList = document.querySelectorAll("div[jsname='V67aGc']");
