@@ -9,19 +9,20 @@ import * as serviceWorker from './serviceWorker';
 
 const MEETING_NOTES_BUTTON_CONTAINER_REACT_INJECT_EL_ID = "meeting_notes_button_container_react_injection_el";
 
-const getAddMeetingNotesButtonContainerHtml = () => {
-  return `
-      <div id="add_meeting_notes_button_container">	
-      </div>
-  `;
-}
-
 /**
  * Get the element where the react meeting notes button container will be injected
  */
 
 const getMeetingNotesButtonContainerReactInjectionEl = () => {
   return document.getElementById(MEETING_NOTES_BUTTON_CONTAINER_REACT_INJECT_EL_ID);
+}
+
+const removeAddMeetingNotesButtonContainerEl = () => {
+  const addMeetingNotesButtonContainerEl = getAddMeetingNotesButtonContainerEl();
+
+  if(addMeetingNotesButtonContainerEl) {
+    addMeetingNotesButtonContainerEl.remove();
+  }
 }
 
 /**
@@ -42,8 +43,16 @@ const getEventDetailsTabPanelEl = () => {
   return document.getElementById("tabEventDetails");
 }
 
-const getAddMeetingNotesButton = () => {
-  return document.getElementById("add_meeting_notes_button");
+const getAddMeetingNotesButtonContainerEl = () => {
+  return document.getElementById("addMeetingNotesButtonContainer");
+}
+
+const getMeetingNotesAnchor = () => {
+  var nodeList = document.querySelectorAll("a[href*='meetingNotesExt']");
+  if(nodeList && nodeList[0]) {
+      console.log(`foo: ${JSON.stringify(nodeList[0])}`)
+      return nodeList[0];
+  }
 }
 
 const getMeetingTitle = () => {
@@ -77,33 +86,54 @@ var observer = new MutationObserver(
         () => {
           console.log("mutation");
 
+            // Look for the meeting details element 
+            const meetingDescriptionEl = getMeetingDescriptionEl();
+
             // If the react injection point doesn't exist yet...
             if( !getMeetingNotesButtonContainerReactInjectionEl() ) {
               
               // Look for the event details tab panel element 
               const eventDetailsTabPanelEl = getEventDetailsTabPanelEl();
 
-              // Look for the meeting details element 
-              const meetingDescriptionEl = getMeetingDescriptionEl();
-
               if( eventDetailsTabPanelEl && meetingDescriptionEl) {
-                  console.log("Inserting react injection point");
-    
-                  // Insert it
-                  const addMeetingNotesButtonContainerReactInjectionEl = insertMeetingNotesButtonContainerReactInjectionEl(eventDetailsTabPanelEl)
+                console.log("Inserting react injection point");
+  
+                // Insert it
+                const addMeetingNotesButtonContainerReactInjectionEl = insertMeetingNotesButtonContainerReactInjectionEl(eventDetailsTabPanelEl)
 
-                    // Insert the react meeting notes button container
-                    insertReactAddMeetingNotesButtonContainer( 
-                      getMeetingNotesButtonContainerReactInjectionEl(),
-                      meetingDescriptionEl
-                    );  
-                  }
+                // Insert the react meeting notes button container
+                insertReactAddMeetingNotesButtonContainer( 
+                  getMeetingNotesButtonContainerReactInjectionEl(),
+                  meetingDescriptionEl
+                );  
               }
+            } else {
+              if( getMeetingNotesAnchor() ) {
+                if( !isAddMeetingNotesButtonHidden()) {
+                  hideAddMeetinNotesButton();
+                }
+              } else {
+                if( isAddMeetingNotesButtonHidden()) {
+                  showAddMeetinNotesButton();
+                }
+              }
+            } 
           }
       )
   }    
 );
 
+const isAddMeetingNotesButtonHidden = () => {
+  return getAddMeetingNotesButtonContainerEl().style.display === "none";
+}
+
+const hideAddMeetinNotesButton = () => {
+  getAddMeetingNotesButtonContainerEl().style.display = "none";
+}
+
+const showAddMeetinNotesButton = () => {
+  getAddMeetingNotesButtonContainerEl().style.display = "";
+}
 
 
 window.addEventListener("keydown", function(event) {
