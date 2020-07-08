@@ -8,6 +8,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 const MEETING_NOTES_BUTTON_CONTAINER_REACT_INJECT_EL_ID = "meeting_notes_button_container_react_injection_el";
+const ADD_MEETING_NOTES_BUTTON_CONTAINER_ID = "ADD_MEETING_NOTES_BUTTON_CONTAINER_ID";
 
 /**
  * Get the element where the react meeting notes button container will be injected
@@ -44,7 +45,7 @@ const getEventDetailsTabPanelEl = () => {
 }
 
 const getAddMeetingNotesButtonContainerEl = () => {
-  return document.getElementById("addMeetingNotesButtonContainer");
+  return document.getElementById(ADD_MEETING_NOTES_BUTTON_CONTAINER_ID);
 }
 
 const getMeetingNotesAnchor = () => {
@@ -62,7 +63,7 @@ const getMeetingTitle = () => {
 const insertReactAddMeetingNotesButtonContainer = (injectionEl, meetingDescriptionEl) => {
   ReactDOM.render(
     <React.StrictMode>
-      <App meetingDescriptionEl={meetingDescriptionEl} getMeetingTitle={getMeetingTitle}/>
+      <App meetingDescriptionEl={meetingDescriptionEl} getMeetingTitle={getMeetingTitle} buttonContainerId={ADD_MEETING_NOTES_BUTTON_CONTAINER_ID}/>
     </React.StrictMode>,
     injectionEl
   );
