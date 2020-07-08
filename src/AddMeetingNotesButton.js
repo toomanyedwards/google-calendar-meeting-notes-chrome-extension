@@ -3,6 +3,7 @@ import React from 'react';
 import styled, {css} from 'styled-components'
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -25,6 +26,7 @@ import Select from '@material-ui/core/Select';
  
 const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTitle}) => {  
   const [addMeetingNotesDialogOpen, setAddMeetingNotesDialogOpen] = React.useState(false);
+  const [addingMeetingNotes, setAddingMeetingNotes] = React.useState(false);
 
   const openAddMeetingNotesDialog = () => {
     setAddMeetingNotesDialogOpen(true);
@@ -40,10 +42,14 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
 
   */
 
-  const closeAddMeetingNotesDialog = () => {
+  const cancelAddMeetingNotesDialog = () => {
     setAddMeetingNotesDialogOpen(false);
   };
 
+  const addMeetingNotes = () => {
+    setAddMeetingNotesDialogOpen(false);
+    setAddingMeetingNotes(true);
+  };
   return (
     <div>
       <button 
@@ -51,9 +57,40 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
         onClick={openAddMeetingNotesDialog}
         class={className}>Add Meeting Notes
       </button>
+      <Dialog maxWidth="lg" open={addingMeetingNotes}  aria-labelledby="form-dialog-title">
+        
+        <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Adding meeting notes...
+        </DialogContentText>
+        <div style={{
+          position: 'relative',
+          display:'flex',
+          width:"100%",
+          justifyContent: 'center'
+  
+        }}>
+        
+          <CircularProgress />
+        </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog maxWidth="lg" open={addMeetingNotesDialogOpen}  aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Add Meeting Notes</DialogTitle>
         <DialogContent>
+        <div style={{
+          position: 'relative',
+          display:'flex',
+          width:"100%",
+          justifyContent: 'center'
+  
+      }}>
+        
+        <CircularProgress />
+        </div>
+          
+        
           
         <Box my={2}>
         <FormControl fullWidth={true} margin="normal">
@@ -113,10 +150,10 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
         </DialogContent>
         
         <DialogActions>
-          <Button  onClick={closeAddMeetingNotesDialog} color="primary">
+          <Button  onClick={cancelAddMeetingNotesDialog} color="primary">
             Cancel
           </Button>
-          <Button color="primary">
+          <Button onClick={addMeetingNotes} color="primary">
             Add Notes
           </Button>
         </DialogActions>
@@ -126,7 +163,7 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
   )
 };
 
-const addMeetingNotes = (meetingDescriptionEl, meetingTitle) => {
+const addMeetingNotesFoo = (meetingDescriptionEl, meetingTitle) => {
   console.log(`Meeting title: ${meetingTitle}`)
 
   chrome.runtime.sendMessage(
@@ -171,6 +208,7 @@ const addNotesDocToMeetingDescription = (meetingDescriptionEl, meetingNotesDocUr
   `<div>Meeting Notes: <a id='foo' href='${meetingNotesDocUrl}&meetingNotesExt='true'>${meetingNotesDocUrl}</a><div>`  
   );
 }
+
 
 
 const StyledAddMeetingNotesButton = styled(AddMeetingNotesButton)`

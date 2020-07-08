@@ -74,8 +74,8 @@ const getMeetingDescriptionEl = () => {
 var observer = new MutationObserver(
   (mutations) => {  
       mutations.forEach(
-          () => {
-            console.log("mutation");
+        () => {
+          console.log("mutation");
 
             // If the react injection point doesn't exist yet...
             if( !getMeetingNotesButtonContainerReactInjectionEl() ) {
@@ -88,7 +88,7 @@ var observer = new MutationObserver(
 
               if( eventDetailsTabPanelEl && meetingDescriptionEl) {
                   console.log("Inserting react injection point");
-                  
+    
                   // Insert it
                   const addMeetingNotesButtonContainerReactInjectionEl = insertMeetingNotesButtonContainerReactInjectionEl(eventDetailsTabPanelEl)
 
@@ -103,6 +103,20 @@ var observer = new MutationObserver(
       )
   }    
 );
+
+
+
+window.addEventListener("keydown", function(event) {
+    if(event.keyCode === 27){
+      console.log("escape key pressed")
+      window.alert(`esc: ${event.cancelable}`)
+      event.preventDefault();
+      //event.stopPropagation();
+      event.stopImmediatePropagation();
+      event.cancelBubble = true;
+    }
+  }, true
+)
 
 const target = document.querySelector("body");
 const config = { childList:true, subtree:true};
