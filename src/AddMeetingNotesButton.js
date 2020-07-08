@@ -58,14 +58,7 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
     );
   }
 
-  /*
-  onClick={
-        ()=>{
-          addMeetingNotes(getMeetingDescriptionEl(), getMeetingTitle());
-        }
-      } 
-
-  */
+  
 
   const cancelAddMeetingNotesDialog = () => {
     setAddMeetingNotesDialogOpen(false);
@@ -74,13 +67,13 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
   const handleAddMeetingNotesButtonPressed = () => {
     setAddMeetingNotesDialogOpen(false);
     setAddingMeetingNotes(true);
-    test();
+    addMeetingtNotes();
     
     //await addMeetingNotes(getMeetingDescriptionEl(), getMeetingTitle());
     //setAddingMeetingNotes(false);
   };
 
-  const test = async () => {
+  const addMeetingtNotes = async () => {
     
     await addMeetingNotes(getMeetingDescriptionEl(), getMeetingTitle());
     
