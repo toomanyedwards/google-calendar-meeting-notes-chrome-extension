@@ -24,7 +24,7 @@ import Select from '@material-ui/core/Select';
 
 
  
-const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTitle}) => {  
+const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle}) => {  
   const [addMeetingNotesDialogOpen, setAddMeetingNotesDialogOpen] = React.useState(false);
   const [addingMeetingNotes, setAddingMeetingNotes] = React.useState(false);
 
@@ -68,14 +68,11 @@ const AddMeetingNotesButton = ({className, getMeetingDescriptionEl, getMeetingTi
     setAddMeetingNotesDialogOpen(false);
     setAddingMeetingNotes(true);
     addMeetingtNotes();
-    
-    //await addMeetingNotes(getMeetingDescriptionEl(), getMeetingTitle());
-    //setAddingMeetingNotes(false);
   };
 
   const addMeetingtNotes = async () => {
     
-    await addMeetingNotes(getMeetingDescriptionEl(), getMeetingTitle());
+    await addMeetingNotes(meetingDescriptionEl, getMeetingTitle());
     
 
   }
