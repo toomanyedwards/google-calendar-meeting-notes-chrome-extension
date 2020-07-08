@@ -18,14 +18,6 @@ const getMeetingNotesButtonContainerReactInjectionEl = () => {
   return document.getElementById(MEETING_NOTES_BUTTON_CONTAINER_REACT_INJECT_EL_ID);
 }
 
-const removeAddMeetingNotesButtonContainerEl = () => {
-  const addMeetingNotesButtonContainerEl = getAddMeetingNotesButtonContainerEl();
-
-  if(addMeetingNotesButtonContainerEl) {
-    addMeetingNotesButtonContainerEl.remove();
-  }
-}
-
 /**
  * Inserts the element where the meeting notes button container react component will be added
  * 
@@ -48,11 +40,12 @@ const getAddMeetingNotesButtonContainerEl = () => {
   return document.getElementById(ADD_MEETING_NOTES_BUTTON_CONTAINER_ID);
 }
 
-const getMeetingNotesAnchor = () => {
+const hasMeetingNotes = () => {
   var nodeList = document.querySelectorAll("a[href*='meetingNotesExt']");
   if(nodeList && nodeList[0]) {
-      console.log(`foo: ${JSON.stringify(nodeList[0])}`)
-      return nodeList[0];
+      return true;
+  } else {
+    return false;
   }
 }
 
@@ -96,8 +89,8 @@ var observer = new MutationObserver(
               // Look for the event details tab panel element 
               const eventDetailsTabPanelEl = getEventDetailsTabPanelEl();
 
+              // if the event details panel and meeting description element exist
               if( eventDetailsTabPanelEl && meetingDescriptionEl) {
-                console.log("Inserting react injection point");
   
                 // Insert it
                 const addMeetingNotesButtonContainerReactInjectionEl = insertMeetingNotesButtonContainerReactInjectionEl(eventDetailsTabPanelEl)
@@ -109,7 +102,7 @@ var observer = new MutationObserver(
                 );  
               }
             } else {
-              if( getMeetingNotesAnchor() ) {
+              if( hasMeetingNotes() ) {
                 if( !isAddMeetingNotesButtonHidden()) {
                   hideAddMeetinNotesButton();
                 }
