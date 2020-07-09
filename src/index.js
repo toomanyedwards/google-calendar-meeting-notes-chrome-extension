@@ -5,7 +5,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
 
 const MEETING_NOTES_BUTTON_CONTAINER_REACT_INJECT_EL_ID = "meeting_notes_button_container_react_injection_el";
 const ADD_MEETING_NOTES_BUTTON_CONTAINER_ID = "ADD_MEETING_NOTES_BUTTON_CONTAINER_ID";
@@ -102,23 +101,19 @@ var observer = new MutationObserver(
                 );  
               }
             } else {
-              if( hasMeetingNotes() ) {
-                if( !isAddMeetingNotesButtonHidden()) {
+              if( hasMeetingNotes() && isAddMeetingNotesButtonVisible() ) {
                   hideAddMeetinNotesButton();
-                }
-              } else {
-                if( isAddMeetingNotesButtonHidden()) {
+              } else if( !hasMeetingNotes() && !isAddMeetingNotesButtonVisible()) {
                   showAddMeetinNotesButton();
-                }
               }
-            } 
-          }
+            }
+          } 
       )
   }    
 );
 
-const isAddMeetingNotesButtonHidden = () => {
-  return getAddMeetingNotesButtonContainerEl().style.display === "none";
+const isAddMeetingNotesButtonVisible = () => {
+  return getAddMeetingNotesButtonContainerEl().style.display != "none";
 }
 
 const hideAddMeetinNotesButton = () => {
@@ -131,12 +126,12 @@ const showAddMeetinNotesButton = () => {
 
 
 /**
- * Handle escape key
+ * For now, disable the escape key so the meeting details window doesn't get closed
+ * out from underneath the dialog. TODO: Should do this conditionally so if the extension
+ * dialogs aren't shown, then escape key works
  */
 window.addEventListener("keydown", function(event) {
-    if(event.keyCode === 27){
-      console.log("escape key pressed")
-      window.alert(`esc: ${event.cancelable}`)
+    if(event.keyCode === 27){ // Escape key
       event.preventDefault();
       event.stopImmediatePropagation();
       event.cancelBubble = true;
