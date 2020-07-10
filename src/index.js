@@ -21,6 +21,11 @@ const getUserEmail = () => {
   return document.getElementById("xOrgEmail").textContent;
 }
 
+const getUserDomain = () => {
+  const userEmail = getUserEmail();
+  return userEmail.substring(userEmail.lastIndexOf("@")+1);
+}
+
 /**
  * Inserts the element where the meeting notes button container react component will be added
  * 
@@ -96,7 +101,7 @@ var observer = new MutationObserver(
               if( eventDetailsTabPanelEl && meetingDescriptionEl) {
   
 
-                console.log(`email: ${getUserEmail()}`);
+                console.log(`domain: ${getUserDomain()}`);
 
                 // Insert it
                 const addMeetingNotesButtonContainerReactInjectionEl = insertMeetingNotesButtonContainerReactInjectionEl(eventDetailsTabPanelEl)
