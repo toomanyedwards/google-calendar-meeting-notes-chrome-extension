@@ -10,7 +10,7 @@ import AddingMeetingNotesDialog from './AddingMeetingNotesDialog.js'
 import {getChromeStorageSyncData, setChromeStorageSyncData, clearChromeStorageSyncData, removeChromeStorageSyncData} from './chromeUtils.js'
 
 
-const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle}) => {  
+const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, getMeetingTitle}) => {  
   const [isAddMeetingNotesDialogOpen, setAddMeetingNotesDialogOpen] = React.useState(false);
   const [addingMeetingNotes, setAddingMeetingNotes] = React.useState(false);
 
@@ -73,7 +73,7 @@ const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle
       resolve => {
         chrome.runtime.sendMessage(
           {
-              meetingTitle: meetingTitle
+            meetingTitle: meetingTitle
           }, 
           response => {
               console.log('addMeetingNotesButton clicked response', response);
@@ -169,7 +169,7 @@ const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle
         class={className}>Add Meeting Notes
       </button>
       <AddingMeetingNotesDialog open={addingMeetingNotes}/>
-      <AddMeetingNotesDialog open={isAddMeetingNotesDialogOpen} setOpen={setAddMeetingNotesDialogOpen} addMeetingNotes={handleAddMeetingNotes}/>
+      <AddMeetingNotesDialog userDomain={userDomain} open={isAddMeetingNotesDialogOpen} setOpen={setAddMeetingNotesDialogOpen} addMeetingNotes={handleAddMeetingNotes}/>
     </div>
   )
 };
