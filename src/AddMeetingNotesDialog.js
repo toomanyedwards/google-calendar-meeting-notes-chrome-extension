@@ -17,6 +17,13 @@ import Select from '@material-ui/core/Select';
 
 
 const AddMeetingNotesDialog = ({open, setOpen, addMeetingNotes}) => {  
+    const [sharingValue, setSharingValue] = React.useState('private');
+      
+    const handleSharingChange = (event) => {
+        setSharingValue(event.target.value);
+    };
+
+
     const onCancel = () => {
         setOpen(false);
     }
@@ -70,11 +77,10 @@ const AddMeetingNotesDialog = ({open, setOpen, addMeetingNotes}) => {
             */}
                 <Box my={2}>
                     <FormLabel component="legend">Sharing</FormLabel>
-                    <RadioGroup aria-label="gender" name="gender1" value={"private"} >
+                    <RadioGroup aria-label="sharing" name="sharing" onChange={handleSharingChange} value={sharingValue} >
                         <FormControlLabel value="private" control={<Radio />} label="Private" />
                         <FormControlLabel value="domain" control={<Radio />} label="Domain" />
                         <FormControlLabel value="public" control={<Radio />} label="Public" />
-                        
                     </RadioGroup>
                 </Box>
             </DialogContent>

@@ -7,6 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import AddMeetingNotesDialog from './AddMeetingNotesDialog.js'
 import AddingMeetingNotesDialog from './AddingMeetingNotesDialog.js'
+import {getChromeStorageSyncData, setChromeStorageSyncData, clearChromeStorageSyncData, removeChromeStorageSyncData} from './chromeUtils.js'
 
 
 const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle}) => {  
@@ -49,7 +50,18 @@ const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle
 
   const openAddMeetingNotesDialog = async () => {
     console.log("openAddMeetingNotesDialog 1");
-    const data = await getDefaultMeetingNotesConfig();
+
+    var data; 
+    await clearChromeStorageSyncData();
+    data = await getChromeStorageSyncData(null);
+    console.log(`cleared data: ${JSON.stringify(data)}`);
+    await setChromeStorageSyncData({foo:"bar", buzz:"bazz"});
+    data = await getChromeStorageSyncData(null);
+    console.log(`all data: ${JSON.stringify(data)}`);
+    await removeChromeStorageSyncData("buzz");
+    data = await getChromeStorageSyncData(null);
+    console.log(`removed buzz: ${JSON.stringify(data)}`);
+
     console.log(`openAddMeetingNotesDialog 1.5: ${JSON.stringify(data)}`);
     console.log("openAddMeetingNotesDialog 2");
     setAddMeetingNotesDialogOpen(true);
