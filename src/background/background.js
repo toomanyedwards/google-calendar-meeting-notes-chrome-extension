@@ -70,8 +70,8 @@ const setGapiToken = async () => {
   return token;
 }
 
-const copyNotesDocTemplate = async (meetingNotesTemplateId, meetingNotesTitle, targetFolderId) => {
-  console.log(`copyNotesDocTemplate: ${meetingNotesTemplateId} ${meetingNotesTitle} ${targetFolderId}`);
+const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId) => {
+  console.log(`copyNotesDocTemplate: ${meetingNotesTemplateId} ${meetingNotesTitle} ${meetingNotesFolderId}`);
   
   try {
     
@@ -80,7 +80,7 @@ const copyNotesDocTemplate = async (meetingNotesTemplateId, meetingNotesTitle, t
         fileId: meetingNotesTemplateId,
         resource: {
           name: meetingNotesTitle,
-          parents:[targetFolderId]
+          parents:[meetingNotesFolderId]
         } 
       }
     );
@@ -100,12 +100,12 @@ const copyNotesDocTemplate = async (meetingNotesTemplateId, meetingNotesTitle, t
 /**
  * Handle the add notes button clicked
  */
-const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetimgNotesTemplateId}) => {
+const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId}) => {
   console.log(`handleAddNotesButtonClicked: ${meetingNotesTitle}`);
 
   const token = setGapiToken();
 
-  const fileId = await copyNotesDocTemplate(meetimgNotesTemplateId,meetingNotesTitle,"1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK");
+  const fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId);
   await setNotesDocPermissions(fileId);
 
   return fileId;
