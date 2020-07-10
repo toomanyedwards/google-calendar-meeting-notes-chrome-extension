@@ -70,8 +70,8 @@ const setGapiToken = async () => {
   return token;
 }
 
-const copyNotesDocTemplate = async (notesTemplateDocId, meetingTitle, targetFolderId) => {
-  console.log(`copyNotesDocTemplate: ${notesTemplateDocId} ${meetingTitle} ${targetFolderId}`);
+const copyNotesDocTemplate = async (notesTemplateDocId, meetingNotesTitle, targetFolderId) => {
+  console.log(`copyNotesDocTemplate: ${notesTemplateDocId} ${meetingNotesTitle} ${targetFolderId}`);
   
   try {
     
@@ -79,7 +79,7 @@ const copyNotesDocTemplate = async (notesTemplateDocId, meetingTitle, targetFold
       {
         fileId: notesTemplateDocId,
         resource: {
-          name: meetingTitle + " Meeting Notes",
+          name: meetingNotesTitle,
           parents:[targetFolderId]
         } 
       }

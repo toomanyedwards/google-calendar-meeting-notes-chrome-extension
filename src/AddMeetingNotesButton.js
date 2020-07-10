@@ -73,7 +73,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
       resolve => {
         chrome.runtime.sendMessage(
           {
-            meetingNotesTitle: meetingTitle
+            meetingNotesTitle: meetingTitle + " Notes"
           }, 
           response => {
               console.log('addMeetingNotesButton clicked response', response);
