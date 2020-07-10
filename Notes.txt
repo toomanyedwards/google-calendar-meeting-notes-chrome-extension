@@ -67,3 +67,7 @@ https://developer.chrome.com/extensions/manifest/web_accessible_resources
 https://blog.usejournal.com/making-an-interactive-chrome-extension-with-react-524483d7aa5d
 
 https://github.com/ctrobins/headline-fetcher
+
+https://noidea.dog/blog/chrome-identity-api
+
+https://noidea.dog/blog/chrome-identity-api-part-2

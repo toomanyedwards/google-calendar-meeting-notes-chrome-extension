@@ -17,6 +17,10 @@ const getMeetingNotesButtonContainerReactInjectionEl = () => {
   return document.getElementById(MEETING_NOTES_BUTTON_CONTAINER_REACT_INJECT_EL_ID);
 }
 
+const getUserEmail = () => {
+  return document.getElementById("xOrgEmail").textContent;
+}
+
 /**
  * Inserts the element where the meeting notes button container react component will be added
  * 
@@ -91,6 +95,9 @@ var observer = new MutationObserver(
               // if the event details panel and meeting description element exist
               if( eventDetailsTabPanelEl && meetingDescriptionEl) {
   
+
+                console.log(`email: ${getUserEmail()}`);
+
                 // Insert it
                 const addMeetingNotesButtonContainerReactInjectionEl = insertMeetingNotesButtonContainerReactInjectionEl(eventDetailsTabPanelEl)
 
