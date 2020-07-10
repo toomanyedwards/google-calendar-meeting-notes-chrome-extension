@@ -1,40 +1,111 @@
 /*global chrome*/
 import React from 'react';
 import styled, {css} from 'styled-components'
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-
-import FormLabel from '@material-ui/core/FormLabel';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Select from '@material-ui/core/Select';
+import AddMeetingNotesDialog from './AddMeetingNotesDialog.js'
+import AddingMeetingNotesDialog from './AddingMeetingNotesDialog.js'
 
 
-
- 
 const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle}) => {  
-  const [addMeetingNotesDialogOpen, setAddMeetingNotesDialogOpen] = React.useState(false);
+  const [isAddMeetingNotesDialogOpen, setAddMeetingNotesDialogOpen] = React.useState(false);
   const [addingMeetingNotes, setAddingMeetingNotes] = React.useState(false);
 
-  const openAddMeetingNotesDialog = () => {
+  const setDefaultMeetingNotesConfig = ({notesTemplateId, noteTemplateName, meetingNotesFolderId, meetingNotesFolderName, sharing}) => {
+    new Promise(
+     (resolve) => {
+       chrome.storage.sync.set(
+        {notesTemplateId, noteTemplateName, meetingNotesFolderId, meetingNotesFolderName, sharing}, 
+         (response) => {
+           console.log(`Data set: ${JSON.stringify(response)}`);
+         }
+       )  
+     }
+   );
+  }
+
+
+  const getDefaultMeetingNotesConfig = () => {
+     return new Promise(
+      resolve => {
+        chrome.storage.sync.get(
+          null,
+          response => {
+            console.log(`Data get: ${JSON.stringify(response)}`);
+            resolve(response);
+          }
+        );
+      }
+     )
+  }
+  
+  const test = async () => {
+    await setDefaultMeetingNotesConfig({notesTemplateId:"someNotesTemplateId", noteTemplateName:"someName"});
+    await getDefaultMeetingNotesConfig();
+  }
+  
+
+  const openAddMeetingNotesDialog = async () => {
+    console.log("openAddMeetingNotesDialog 1");
+    const data = await getDefaultMeetingNotesConfig();
+    console.log(`openAddMeetingNotesDialog 1.5: ${JSON.stringify(data)}`);
+    console.log("openAddMeetingNotesDialog 2");
     setAddMeetingNotesDialogOpen(true);
   };
 
-  const addMeetingNotes = (meetingDescriptionEl, meetingTitle) => {
-    console.log(`Meeting title: ${meetingTitle}`)
+  const addMeetingNotes = () => {
+    const meetingTitle = getMeetingTitle();
+    return new Promise(
+      resolve => {
+        chrome.runtime.sendMessage(
+          {
+              meetingTitle: meetingTitle
+          }, 
+          response => {
+              console.log('addMeetingNotesButton clicked response', response);
+              
+              if(response.meetingNotesDocUrl) {
+                  // console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
+                  addNotesDocToMeetingDescription(meetingDescriptionEl, response.meetingNotesDocUrl)
+              } else {
   
+              }
+              resolve(response);
+          }
+        )  
+      }
+    );
+  }
+
+
+
+  const handleAddMeetingNotes = async (meetingDescriptionEl, meetingTitle) => {
+    console.log(`handleAddMeetingNotes 1`);
+    setAddMeetingNotesDialogOpen(false);
+    console.log(`handleAddMeetingNotes 2`);
+    setAddingMeetingNotes(true);
+    console.log(`handleAddMeetingNotes 3`);
+    try{
+      await addMeetingNotes();
+    }catch(e){
+      console.log(`Exception: ${JSON.stringify(e)}`);
+    }
+    finally{
+      setAddingMeetingNotes(false);
+    }
+
+    
+    //await addingMeetingNotes();
+    //setAddingMeetingNotes(true);
+
+/*    console.log(`addMeetingNotes 1`);
+    setAddingMeetingNotes(true);
+    console.log(`Meeting title: ${meetingTitle}`);
+    await addMeetingNotes(meetingDescriptionEl, meetingTitle);
+    setAddingMeetingNotes(false);
+  /*
     new Promise(
       (resolve) => {
         chrome.runtime.sendMessage(
@@ -55,9 +126,9 @@ const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle
             }
         )  
       }
-    );
+    );*/
   }
-
+/*
   
 
   const cancelAddMeetingNotesDialog = () => {
@@ -69,6 +140,7 @@ const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle
     setAddingMeetingNotes(true);
     addMeetingtNotes();
   };
+*/
 
   const addMeetingtNotes = async () => {
     
@@ -84,96 +156,8 @@ const AddMeetingNotesButton = ({className, meetingDescriptionEl, getMeetingTitle
         onClick={openAddMeetingNotesDialog}
         class={className}>Add Meeting Notes
       </button>
-      <Dialog maxWidth="lg" open={addingMeetingNotes}  aria-labelledby="form-dialog-title">
-        
-        <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          Adding meeting notes...
-        </DialogContentText>
-        <div style={{
-          position: 'relative',
-          display:'flex',
-          width:"100%",
-          justifyContent: 'center'
-  
-        }}>
-        
-          <CircularProgress />
-        </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog maxWidth="lg" open={addMeetingNotesDialogOpen}  aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Add Meeting Notes</DialogTitle>
-        <DialogContent>
-          
-        <Box my={2}>
-        <FormControl fullWidth={true} margin="normal">
-        <FormLabel component="legend">Notes Template</FormLabel>
-          <Select
-            labelId="demo-simple-select-placeholder-label-label"
-            id="demo-simple-select-placeholder-label"
-            value=""
-            
-            displayEmpty
-            
-          >
-            <MenuItem value="">
-              <em>Select a template</em>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-        </FormControl>
-        </Box>
-        <Box my={2}>
-        <FormControl fullWidth={true} >
-        <FormLabel component="legend">Notes Folder</FormLabel>
-          <Select
-            labelId="demo-simple-select-placeholder-label-label"
-            id="demo-simple-select-placeholder-label"
-            value=""
-            
-            displayEmpty
-            
-          >
-            <MenuItem value="">
-              <em>Select a folder</em>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-        </FormControl>    
-        </Box>
-
-
-
-        
-
-          
-        <Box my={2}>
-          <FormLabel component="legend">Sharing</FormLabel>
-          <RadioGroup aria-label="gender" name="gender1" value={"private"} >
-            <FormControlLabel value="private" control={<Radio />} label="Private" />
-            <FormControlLabel value="domain" control={<Radio />} label="Domain" />
-            <FormControlLabel value="public" control={<Radio />} label="Public" />
-            
-          </RadioGroup>
-          </Box>
-        </DialogContent>
-        
-        <DialogActions>
-          <Button  onClick={cancelAddMeetingNotesDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAddMeetingNotesButtonPressed} color="primary">
-            Add Notes
-          </Button>
-        </DialogActions>
-      </Dialog>
-      
+      <AddingMeetingNotesDialog open={addingMeetingNotes}/>
+      <AddMeetingNotesDialog open={isAddMeetingNotesDialogOpen} setOpen={setAddMeetingNotesDialogOpen} addMeetingNotes={handleAddMeetingNotes}/>
     </div>
   )
 };

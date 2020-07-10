@@ -64,7 +64,7 @@ const insertReactAddMeetingNotesButtonContainer = (injectionEl, meetingDescripti
 const getMeetingDescriptionEl = () => {
   var nodeList = document.querySelectorAll("div[id*='T2Ybvb']");
   if(nodeList && nodeList[0]) {
-      console.log(`getMeetingDescriptionEl: ${JSON.stringify(nodeList[0])}`)
+      // console.log(`getMeetingDescriptionEl: ${JSON.stringify(nodeList[0])}`)
       return nodeList[0];
   }
 }
@@ -77,7 +77,7 @@ var observer = new MutationObserver(
   (mutations) => {  
       mutations.forEach(
         () => {
-          console.log("mutation");
+          // console.log("mutation");
 
             // Look for the meeting details element 
             const meetingDescriptionEl = getMeetingDescriptionEl();

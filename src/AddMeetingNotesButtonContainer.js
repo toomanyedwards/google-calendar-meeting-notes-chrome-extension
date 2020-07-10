@@ -1,7 +1,7 @@
 /*global chrome*/
 
 import React from 'react';
-import AddMeetingNotesButon from './AddMeetingNotesButton.js'
+import AddMeetingNotesButton from './AddMeetingNotesButton.js'
 
  
 const AddMeetingNotesButtonContainer = props => 
@@ -14,7 +14,7 @@ const AddMeetingNotesButtonContainer = props =>
             </span>
         </div>
         <div class="j3nyw">
-            <AddMeetingNotesButon {...props}/>
+            <AddMeetingNotesButton {...props}/>
         </div>
     </div>
  
