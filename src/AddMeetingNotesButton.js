@@ -75,8 +75,14 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
           {
             meetingNotesTitle: meetingTitle + " Notes",
             meetingNotesTemplateId: "1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI",
-            meetingNotesFolderId: "1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK"
-            
+            meetingNotesFolderId: "1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK",
+            meetingNotesFilePermission: {
+              role: "writer",
+              type: "domain",
+              domain: "civitaslearning.com",
+              withLink: false,
+              allowFileDiscovery: true
+            }
           }, 
           response => {
               console.log('addMeetingNotesButton clicked response', response);
