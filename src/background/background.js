@@ -100,12 +100,12 @@ const copyNotesDocTemplate = async (notesTemplateDocId, meetingTitle, targetFold
 /**
  * Handle the add notes button clicked
  */
-const handleAddNotesButtonClicked = async (meetingTitle) => {
-  console.log(`handleAddNotesButtonClicked: ${meetingTitle}`);
+const handleAddNotesButtonClicked = async ({meetingNotesTitle}) => {
+  console.log(`handleAddNotesButtonClicked: ${meetingNotesTitle}`);
 
   const token = setGapiToken();
 
-  const fileId = await copyNotesDocTemplate("1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI",meetingTitle,"1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK");
+  const fileId = await copyNotesDocTemplate("1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI",meetingNotesTitle,"1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK");
   await setNotesDocPermissions(fileId);
 
   return fileId;
@@ -158,7 +158,7 @@ chrome.extension.onMessage.addListener(
     //return true;
    
     
-    handleAddNotesButtonClicked(request.meetingTitle).
+    handleAddNotesButtonClicked(request).
       then( (fileId)=>{
       sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
     });
