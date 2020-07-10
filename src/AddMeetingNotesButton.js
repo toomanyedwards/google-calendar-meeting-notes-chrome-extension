@@ -73,7 +73,9 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
       resolve => {
         chrome.runtime.sendMessage(
           {
-            meetingNotesTitle: meetingTitle + " Notes"
+            meetingNotesTitle: meetingTitle + " Notes",
+            meetimgNotesTemplateId: "1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI"
+            
           }, 
           response => {
               console.log('addMeetingNotesButton clicked response', response);
