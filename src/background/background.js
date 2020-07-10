@@ -100,38 +100,20 @@ const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, m
 /**
  * Handle the add notes button clicked
  */
-const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId, meetingNotesFilePermission}) => {
+const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId, meetingNotesFilePermissions}) => {
   console.log(`handleAddNotesButtonClicked: ${meetingNotesTitle}`);
 
   const token = setGapiToken();
 
   const fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId);
 
-  permissions = {
-    role:"writer",
-    type:"domain",
-    domain:"civitaslearning.com",
-    withLink:true
-  };
-  await setMeetingNotesFilePermissions(fileId, meetingNotesFilePermission);
+  await setGoogleDirveFilePermissions(fileId, meetingNotesFilePermissions);
 
   return fileId;
 }
 
-const setMeetingNotesFilePermissions = async (fileId, permission) => {
+const setGoogleDirveFilePermissions = async (fileId, permissions) => {
   try{
-    /*
-    await gapi.client.drive.permissions.create(
-      {
-        fileId:fileId,
-        permission: {
-          role:"writer",
-          type:"domain",
-          domain:"civitaslearning.com",
-          withLink:true
-        }
-      }
-    );*/
     await gapi.client.drive.permissions.create(
       {
         fileId:fileId,
@@ -140,8 +122,7 @@ const setMeetingNotesFilePermissions = async (fileId, permission) => {
     );
   }catch(e) {
     console.log(`Exception: ${JSON.stringify(e)}`);
-  }
-  
+  }  
 }
 
 /**

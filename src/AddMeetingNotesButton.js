@@ -76,7 +76,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
             meetingNotesTitle: meetingTitle + " Notes",
             meetingNotesTemplateId: "1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI",
             meetingNotesFolderId: "1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK",
-            meetingNotesFilePermission: {
+            meetingNotesFilePermissions: {
               role: "writer",
               type: "domain",
               domain: "civitaslearning.com",
