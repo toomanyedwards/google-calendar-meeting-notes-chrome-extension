@@ -107,7 +107,21 @@ const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTempl
 
   const fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId);
 
+  var perms = await gapi.client.drive.permissions.list({fileId});  
+  console.log(`perms: ${JSON.stringify(perms)}`);
+
+  const permissionId = perms.result.permissions[0].id;
+  console.log(`perms: ${JSON.stringify(permissionId)}`);
+
+  //perms = await gapi.client.drive.permissions.delete({fileId, permissionId});  
+
+  //perms = await gapi.client.drive.permissions.list({fileId});  
+  // /console.log(`perms: ${JSON.stringify(perms)}`);
+
   await setGoogleDirveFilePermissions(fileId, meetingNotesFilePermissions);
+
+  perms = await gapi.client.drive.permissions.list({fileId});  
+  console.log(`perms: ${JSON.stringify(perms)}`);
 
   return fileId;
 }
@@ -123,6 +137,7 @@ const setGoogleDirveFilePermissions = async (fileId, permissions) => {
   }catch(e) {
     console.log(`Exception: ${JSON.stringify(e)}`);
   }  
+
 }
 
 /**
