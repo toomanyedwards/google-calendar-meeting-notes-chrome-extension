@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export default function ErrorsDialog({open, handleClose}) {
+export default function ErrorsDialog({open, handleClose, errors}) {
   
   return (
     <Dialog
@@ -18,7 +18,7 @@ export default function ErrorsDialog({open, handleClose}) {
         <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Some error happened
+            {errors.length>0?errors[0].message:""}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

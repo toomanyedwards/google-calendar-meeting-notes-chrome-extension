@@ -192,7 +192,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
         class={className}>Add Meeting Notes
       </button>
       <AddingMeetingNotesDialog open={addingMeetingNotes}/>
-      <ErrorsDialog open={isErrorsDialogOpen} handleClose={handleErrorsDialogClose}/>
+      <ErrorsDialog open={isErrorsDialogOpen} handleClose={handleErrorsDialogClose} errors={errors}/>
       <AddMeetingNotesDialog userDomain={userDomain} open={isAddMeetingNotesDialogOpen} setOpen={setAddMeetingNotesDialogOpen} addMeetingNotes={handleAddMeetingNotes}/>
     </div>
   )
