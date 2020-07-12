@@ -74,9 +74,12 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
         chrome.runtime.sendMessage(
           {
             meetingNotesTitle: meetingTitle + " Notes",
+            // civitas
             meetingNotesTemplateId: "1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI",
-            //meetingNotesTemplateId: "1bAoZmcWXQnofin2esddfdTWB0Ko0MkNJBsQPpS9SZS4",
             meetingNotesFolderId: "1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK",
+
+            // google
+            //meetingNotesTemplateId: "1bAoZmcWXQnofin2esddfdTWB0Ko0MkNJBsQPpS9SZS4",
             //meetingNotesFolderId: " 1TNkioETxxx10b9Ikg0D0bZVbVSnW8XZt",
             meetingNotesSharing
           }, 

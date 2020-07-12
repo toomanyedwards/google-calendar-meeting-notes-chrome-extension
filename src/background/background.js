@@ -90,7 +90,7 @@ const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, m
     console.log(`Created file: ${fileId}`)
     return fileId;
   }catch(e) {
-    console.log(`Exception: ${e}`)
+    console.log(`copyNotesDocTemplate errors: ${JSON.stringify(e)}`)
   }
 
   // console.log(`result: ${JSON.stringify(result)}`);
@@ -130,6 +130,7 @@ const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTempl
 }
 
 const setGoogleDriveFileSharingPrivate = async (fileId) => {
+  console.log(`setGoogleDriveFileSharingPrivate ${fileId}`);
   try{
     const permissionsResult = await gapi.client.drive.permissions.list({fileId:fileId});
     
@@ -146,18 +147,32 @@ const setGoogleDriveFileSharingPrivate = async (fileId) => {
     );  
   }catch(e) {
     const errors = e.result.error.errors;
-    console.log(`setGoogleDriveFileSharingPrivate Error: ${JSON.stringify(errors)}`);
+    console.log(`setGoogleDriveFileSharingPrivate errors: ${JSON.stringify(errors)}`);
     throw errors
   }
 } 
 
 const setGoogleDriveFileSharingDomain = async (fileId, userDomain) => {
+  console.log(`setGoogleDriveFileSharingDomain: ${fileId} ${userDomain}`);
   await setGoogleDriveFilePermissions(
     fileId,
     {
       role: "writer",
       type: "domain",
-      domain: userDomain+"fp",
+      domain: userDomain,
+      withLink: false,
+      allowFileDiscovery: true
+    }
+  );
+}
+
+const setGoogleDriveFileSharingPublic = async (fileId) => {
+  console.log(`setGoogleDriveFileSharingPublic ${fileId}`);
+  await setGoogleDriveFilePermissions(
+    fileId,
+    {
+      role: "writer",
+      type: "anyone",
       withLink: false,
       allowFileDiscovery: true
     }
@@ -175,10 +190,19 @@ const setMeetingNotesSharing = async (fileId, meetingNoteSharing) => {
     case "domain":
       await setGoogleDriveFileSharingDomain(fileId, meetingNoteSharing.userDomain);
       break;
+    case "public":
+      await setGoogleDriveFileSharingPublic(fileId);
+      break;
   }
+  
 }
 
-
+/**
+ * Sets the permissions of a google drive file
+ * 
+ * @param {*} fileId 
+ * @param {*} permissions 
+ */
 const setGoogleDriveFilePermissions = async (fileId, permissions) => {
   try{
     await gapi.client.drive.permissions.create(
@@ -189,7 +213,8 @@ const setGoogleDriveFilePermissions = async (fileId, permissions) => {
     );
   }catch(e) {
     const errors = e.result.error.errors;
-    console.log(`setGoogleDriveFilePermissions: Exception: ${JSON.stringify(errors)}`);
+    console.log(`setGoogleDriveFilePermissions errors: ${JSON.stringify(errors)}`);
+    throw errors;
   }  
 
 }
