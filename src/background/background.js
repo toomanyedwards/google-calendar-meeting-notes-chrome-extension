@@ -100,13 +100,14 @@ const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, m
 /**
  * Handle the add notes button clicked
  */
-const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId, meetingNotesFilePermissions}) => {
+const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId, meetingNotesSharing}) => {
   console.log(`handleAddNotesButtonClicked: ${meetingNotesTitle}`);
 
   const token = setGapiToken();
 
   const fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId);
 
+  /*
   var perms = await gapi.client.drive.permissions.list({fileId});  
   console.log(`perms: ${JSON.stringify(perms)}`);
 
@@ -122,11 +123,63 @@ const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTempl
 
   perms = await gapi.client.drive.permissions.list({fileId});  
   console.log(`perms: ${JSON.stringify(perms)}`);
+  */
 
+  await setMeetingNotesSharing(fileId, meetingNotesSharing);
   return fileId;
 }
 
-const setGoogleDirveFilePermissions = async (fileId, permissions) => {
+const setGoogleDriveFileSharingPrivate = async (fileId) => {
+  try{
+    const permissionsResult = await gapi.client.drive.permissions.list({fileId:fileId});
+    
+    // Remove any permissions that aren't owner
+    await Promise.all(
+      permissionsResult.result.permissions.map(
+        async (permission) => {
+          const role = permission.role;
+          if(role != "owner") {
+            await gapi.client.drive.permissions.delete({fileId, id: permission.id});   
+          }
+        }
+      )
+    );  
+  }catch(e) {
+    const errors = e.result.error.errors;
+    console.log(`setGoogleDriveFileSharingPrivate Error: ${JSON.stringify(errors)}`);
+    throw errors
+  }
+} 
+
+const setGoogleDriveFileSharingDomain = async (fileId, userDomain) => {
+  await setGoogleDriveFilePermissions(
+    fileId,
+    {
+      role: "writer",
+      type: "domain",
+      domain: userDomain+"fp",
+      withLink: false,
+      allowFileDiscovery: true
+    }
+  );
+}
+
+/**
+ * TODO: Use constants for sharing level
+ */
+const setMeetingNotesSharing = async (fileId, meetingNoteSharing) => {
+  switch(meetingNoteSharing.sharingLevel) {
+    case "private":
+      await setGoogleDriveFileSharingPrivate(fileId);
+      break;
+    case "domain":
+      await setGoogleDriveFileSharingDomain(fileId, meetingNoteSharing.userDomain);
+      break;
+  }
+}
+
+
+const setGoogleDriveFilePermissions = async (fileId, permissions) => {
   try{
     await gapi.client.drive.permissions.create(
       {
@@ -135,7 +188,8 @@ const setGoogleDirveFilePermissions = async (fileId, permissions) => {
       }
     );
   }catch(e) {
-    console.log(`Exception: ${JSON.stringify(e)}`);
+    const errors = e.result.error.errors;
+    console.log(`setGoogleDriveFilePermissions: Exception: ${JSON.stringify(errors)}`);
   }  
 
 }

@@ -67,7 +67,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
     setAddMeetingNotesDialogOpen(true);
   };
 
-  const addMeetingNotes = () => {
+  const addMeetingNotes = (meetingNotesSharing) => {
     const meetingTitle = getMeetingTitle();
     return new Promise(
       resolve => {
@@ -75,14 +75,10 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
           {
             meetingNotesTitle: meetingTitle + " Notes",
             meetingNotesTemplateId: "1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI",
+            //meetingNotesTemplateId: "1bAoZmcWXQnofin2esddfdTWB0Ko0MkNJBsQPpS9SZS4",
             meetingNotesFolderId: "1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK",
-            meetingNotesFilePermissions: {
-              role: "writer",
-              type: "domain",
-              domain: "civitaslearning.com",
-              withLink: false,
-              allowFileDiscovery: true
-            }
+            //meetingNotesFolderId: " 1TNkioETxxx10b9Ikg0D0bZVbVSnW8XZt",
+            meetingNotesSharing
           }, 
           response => {
               console.log('addMeetingNotesButton clicked response', response);
@@ -102,14 +98,14 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
 
 
 
-  const handleAddMeetingNotes = async (meetingDescriptionEl, meetingTitle) => {
+  const handleAddMeetingNotes = async (meetingNotesFileSharing) => {
     console.log(`handleAddMeetingNotes 1`);
     setAddMeetingNotesDialogOpen(false);
     console.log(`handleAddMeetingNotes 2`);
     setAddingMeetingNotes(true);
     console.log(`handleAddMeetingNotes 3`);
     try{
-      await addMeetingNotes();
+      await addMeetingNotes(meetingNotesFileSharing);
     }catch(e){
       console.log(`Exception: ${JSON.stringify(e)}`);
     }

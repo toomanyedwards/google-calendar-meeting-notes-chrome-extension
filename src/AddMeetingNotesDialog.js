@@ -17,10 +17,10 @@ import Select from '@material-ui/core/Select';
 
 
 const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => {  
-    const [sharingValue, setSharingValue] = React.useState('private');
+    const [sharingLevel, setSharingLevel] = React.useState('private');
       
-    const handleSharingChange = (event) => {
-        setSharingValue(event.target.value);
+    const handleSharingLevelChange = (event) => {
+        setSharingLevel(event.target.value);
     };
 
 
@@ -28,7 +28,9 @@ const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => 
         setOpen(false);
     }
     const onAddMeetingNotesButtonPressed = () => {
-        addMeetingNotes();
+        addMeetingNotes(
+                {sharingLevel, userDomain}
+            );
     }
     return (
         <Dialog maxWidth="lg" open={open}  aria-labelledby="form-dialog-title">
@@ -77,7 +79,8 @@ const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => 
             */}
                 <Box my={2}>
                     <FormLabel component="legend">Sharing</FormLabel>
-                    <RadioGroup aria-label="sharing" name="sharing" onChange={handleSharingChange} value={sharingValue} >
+                    <RadioGroup aria-label="sharing" name="sharing" onChange={handleSharingLevelChange} value={sharingLevel} >
+                        {/* TODO: use shared constants for the values */}
                         <FormControlLabel value="private" control={<Radio />} label="Private" />
                         <FormControlLabel value="domain" control={<Radio />} label={`Domain (${userDomain})`} />
                         <FormControlLabel value="public" control={<Radio />} label="Public" />
