@@ -236,9 +236,16 @@ chrome.extension.onMessage.addListener(
    
     
     handleAddNotesButtonClicked(request).
-      then( (fileId)=>{
-      sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
-    });
+      then( 
+        (fileId)=>{
+          sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
+        }
+      ).catch(
+        (errors) => {
+          console.log(`handleAddNotesButtonClicked errors: ${JSON.stringify(errors)}`);
+          sendResponse({errors});
+        }
+      );
     
     return true;
     /*

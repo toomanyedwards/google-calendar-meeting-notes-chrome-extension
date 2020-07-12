@@ -70,7 +70,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
   const addMeetingNotes = (meetingNotesSharing) => {
     const meetingTitle = getMeetingTitle();
     return new Promise(
-      resolve => {
+      (resolve, reject) => {
         chrome.runtime.sendMessage(
           {
             meetingNotesTitle: meetingTitle + " Notes",
@@ -90,7 +90,9 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
                   // console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
                   addNotesDocToMeetingDescription(meetingDescriptionEl, response.meetingNotesDocUrl)
               } else {
-  
+                const errors = response.errors;
+                console.log(`addMeetingNotes errors: ${errors}`);
+                reject(errors);
               }
               resolve(response);
           }
@@ -109,8 +111,8 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
     console.log(`handleAddMeetingNotes 3`);
     try{
       await addMeetingNotes(meetingNotesFileSharing);
-    }catch(e){
-      console.log(`Exception: ${JSON.stringify(e)}`);
+    }catch(errors){
+      console.log(`handleAddMeetingNotes errors: ${JSON.stringify(errors)}`);
     }
     finally{
       setAddingMeetingNotes(false);
