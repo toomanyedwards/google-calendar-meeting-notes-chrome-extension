@@ -7,11 +7,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import AddMeetingNotesDialog from './AddMeetingNotesDialog.js'
 import AddingMeetingNotesDialog from './AddingMeetingNotesDialog.js'
+import ErrorsDialog from './ErrorsDialog.js'
 import {getChromeStorageSyncData, setChromeStorageSyncData, clearChromeStorageSyncData, removeChromeStorageSyncData} from './chromeUtils.js'
 
 
 const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, getMeetingTitle}) => {  
   const [isAddMeetingNotesDialogOpen, setAddMeetingNotesDialogOpen] = React.useState(false);
+  const [isErrorsDialogOpen, setErrorsDialogOpen] = React.useState(false);
   const [addingMeetingNotes, setAddingMeetingNotes] = React.useState(false);
 
   const setDefaultMeetingNotesConfig = ({notesTemplateId, noteTemplateName, meetingNotesFolderId, meetingNotesFolderName, sharing}) => {
@@ -113,6 +115,11 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
       await addMeetingNotes(meetingNotesFileSharing);
     }catch(errors){
       console.log(`handleAddMeetingNotes errors: ${JSON.stringify(errors)}`);
+      setAddingMeetingNotes(false);
+      console.log(`handleAddMeetingNotes 2`);
+
+      setErrorsDialogOpen(true);
+      console.log(`handleAddMeetingNotes 3`);
     }
     finally{
       setAddingMeetingNotes(false);
@@ -179,6 +186,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
         class={className}>Add Meeting Notes
       </button>
       <AddingMeetingNotesDialog open={addingMeetingNotes}/>
+      <ErrorsDialog open={isErrorsDialogOpen} setOpen={setErrorsDialogOpen}/>
       <AddMeetingNotesDialog userDomain={userDomain} open={isAddMeetingNotesDialogOpen} setOpen={setAddMeetingNotesDialogOpen} addMeetingNotes={handleAddMeetingNotes}/>
     </div>
   )
