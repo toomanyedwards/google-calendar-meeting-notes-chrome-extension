@@ -13,6 +13,7 @@ import {getChromeStorageSyncData, setChromeStorageSyncData, clearChromeStorageSy
 
 const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, getMeetingTitle}) => {  
   const [isAddMeetingNotesDialogOpen, setAddMeetingNotesDialogOpen] = React.useState(false);
+  const [errors, setErrors] = React.useState([]);
   const [isErrorsDialogOpen, setErrorsDialogOpen] = React.useState(false);
   const [addingMeetingNotes, setAddingMeetingNotes] = React.useState(false);
 
@@ -114,6 +115,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
     try{
       await addMeetingNotes(meetingNotesFileSharing);
     }catch(errors){
+      setErrors(errors);
       console.log(`handleAddMeetingNotes errors: ${JSON.stringify(errors)}`);
       setAddingMeetingNotes(false);
       console.log(`handleAddMeetingNotes 2`);
@@ -178,6 +180,10 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
 
   }
 
+  const handleErrorsDialogClose = () => {
+    setErrorsDialogOpen(false);
+  }
+
   return (
     <div>
       <button 
@@ -186,7 +192,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
         class={className}>Add Meeting Notes
       </button>
       <AddingMeetingNotesDialog open={addingMeetingNotes}/>
-      <ErrorsDialog open={isErrorsDialogOpen} setOpen={setErrorsDialogOpen}/>
+      <ErrorsDialog open={isErrorsDialogOpen} handleClose={handleErrorsDialogClose}/>
       <AddMeetingNotesDialog userDomain={userDomain} open={isAddMeetingNotesDialogOpen} setOpen={setAddMeetingNotesDialogOpen} addMeetingNotes={handleAddMeetingNotes}/>
     </div>
   )
