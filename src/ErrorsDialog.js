@@ -15,7 +15,7 @@ export default function ErrorsDialog({open, handleClose, errors}) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Error creating meeting notes"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {errors.length>0?errors[0].message:""}
