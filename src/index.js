@@ -125,15 +125,26 @@ var observer = new MutationObserver(
 );
 
 const isAddMeetingNotesButtonVisible = () => {
-  return getAddMeetingNotesButtonContainerEl().style.display != "none";
+  const addMeetingNotesButtonContainerEl = getAddMeetingNotesButtonContainerEl();
+  if(addMeetingNotesButtonContainerEl){
+    return getAddMeetingNotesButtonContainerEl().style.display != "none";
+  } else {
+    return false;
+  }
 }
 
 const hideAddMeetinNotesButton = () => {
-  getAddMeetingNotesButtonContainerEl().style.display = "none";
+  const addMeetingNotesButtonContainerEl = getAddMeetingNotesButtonContainerEl();
+  if(addMeetingNotesButtonContainerEl){
+    getAddMeetingNotesButtonContainerEl().style.display = "none";
+  }
 }
 
 const showAddMeetinNotesButton = () => {
-  getAddMeetingNotesButtonContainerEl().style.display = "";
+  const addMeetingNotesButtonContainerEl = getAddMeetingNotesButtonContainerEl();
+  if(addMeetingNotesButtonContainerEl){
+    getAddMeetingNotesButtonContainerEl().style.display = "";
+  }
 }
 
 

@@ -17,9 +17,15 @@ export default function ErrorsDialog({open, handleClose, errors}) {
       >
         <DialogTitle id="alert-dialog-title">{"Error creating meeting notes"}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {errors.length>0?errors[0].message:""}
-          </DialogContentText>
+          {
+              errors.map(
+                error => (
+                <DialogContentText id="alert-dialog-description">
+                  {error.message}
+                </DialogContentText>
+                )
+              )
+          }
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary" autoFocus>

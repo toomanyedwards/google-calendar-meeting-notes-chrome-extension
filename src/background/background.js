@@ -70,6 +70,18 @@ const setGapiToken = async () => {
   return token;
 }
 
+const deleteGoogleDriveFile = async (fileId) => {
+  console.log(`deleteGoogleDriveFile: fileId: ${fileId}`);
+  try {
+    await gapi.client.drive.files.delete({fileId});
+  }
+  catch(resultErrors) {
+    const errors = resultErrors.result.error.errors;
+    console.log(`deleteGoogleDriveFile errors: ${JSON.stringify(errors)}`);
+    throw errors
+  }
+}
+
 const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId) => {
   console.log(`copyNotesDocTemplate: ${meetingNotesTemplateId} ${meetingNotesTitle} ${meetingNotesFolderId}`);
   
@@ -103,30 +115,34 @@ const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, m
 const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId, meetingNotesSharing}) => {
   console.log(`handleAddNotesButtonClicked: ${meetingNotesTitle}`);
 
+  
   const token = setGapiToken();
+  var errors = [];
+  var fileId;
+  try{
+    fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId);
+  }catch(copyFileErrors) {
+    console.log(`handleAddNotesButtonClicked.copyFileErrors: ${JSON.stringify(copyFileErrors)}`);
+    errors = errors.concat(copyFileErrors);
+    throw errors;
+  }
 
-  const fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId);
-
-  /*
-  var perms = await gapi.client.drive.permissions.list({fileId});  
-  console.log(`perms: ${JSON.stringify(perms)}`);
-
-  const permissionId = perms.result.permissions[0].id;
-  console.log(`perms: ${JSON.stringify(permissionId)}`);
-
-  //perms = await gapi.client.drive.permissions.delete({fileId, permissionId});  
-
-  //perms = await gapi.client.drive.permissions.list({fileId});  
-  // /console.log(`perms: ${JSON.stringify(perms)}`);
-
-  await setGoogleDirveFilePermissions(fileId, meetingNotesFilePermissions);
-
-  perms = await gapi.client.drive.permissions.list({fileId});  
-  console.log(`perms: ${JSON.stringify(perms)}`);
-  */
-
-  await setMeetingNotesSharing(fileId, meetingNotesSharing);
-  return fileId;
+  try {
+    await setMeetingNotesSharing(fileId, meetingNotesSharing);
+    return fileId;
+  }
+  catch(sharingErrors) {
+    console.log(`handleAddNotesButtonClicked.sharingErrors: ${JSON.stringify(sharingErrors)}`);
+    errors = errors.concat(sharingErrors);
+    try{
+      await deleteGoogleDriveFile(fileId);
+    }catch(fileDeleteErrors) {
+      console.log(`handleAddNotesButtonClicked.fileDeleteErrors: ${JSON.stringify(fileDeleteErrors)}`);
+      errors = errors.concat(fileDeleteErrors);
+     }
+     console.log(`handleAddNotesButtonClicked.errors: ${JSON.stringify(errors)}`);
+     throw errors;
+  }
 }
 
 const setGoogleDriveFileSharingPrivate = async (fileId) => {
@@ -145,9 +161,15 @@ const setGoogleDriveFileSharingPrivate = async (fileId) => {
         }
       )
     );  
-  }catch(e) {
-    const errors = e.result.error.errors;
+  }catch(sharingErrors) {
+    const errors = sharingErrors.result.error.errors;
     console.log(`setGoogleDriveFileSharingPrivate errors: ${JSON.stringify(errors)}`);
+    try{
+      await deleteGoogleDriveFile(fileId);
+    }
+    catch(deletegErrors) {
+      errors.push(deleteErrors.result.error.errors);
+    }
     throw errors
   }
 } 
@@ -168,6 +190,7 @@ const setGoogleDriveFileSharingDomain = async (fileId, userDomain) => {
 
 const setGoogleDriveFileSharingPublic = async (fileId) => {
   console.log(`setGoogleDriveFileSharingPublic ${fileId}`);
+  
   await setGoogleDriveFilePermissions(
     fileId,
     {
