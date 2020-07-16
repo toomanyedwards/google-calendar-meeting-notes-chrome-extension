@@ -1,10 +1,6 @@
 /*global chrome*/
 import React from 'react';
 import styled, {css} from 'styled-components'
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import AddMeetingNotesDialog from './AddMeetingNotesDialog.js'
 import AddingMeetingNotesDialog from './AddingMeetingNotesDialog.js'
 import ErrorsDialog from './ErrorsDialog.js'

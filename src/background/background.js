@@ -101,8 +101,23 @@ const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, m
     
     console.log(`Created file: ${fileId}`)
     return fileId;
-  }catch(e) {
-    console.log(`copyNotesDocTemplate errors: ${JSON.stringify(e)}`)
+  }catch(resultErrors) {
+    const errors = resultErrors.result.error.errors;
+    console.log(`copyNotesDocTemplate errors: ${errors}`);
+
+    if( errors.length === 1 && errors[0].reason === "notFound" ){
+
+      const errorMessage = errors[0].message;
+
+      // Get the id of the folder or file not found
+      const notFoundId = errorMessage.substring(errorMessage.indexOf(": ")+2, errorMessage.length-1);
+
+      // Set the mesage to an application level message
+      errors[0].originalMessage = errors[0].message;
+      errors[0].message = `Could not find the file: ${notFoundId}.`;
+    }
+
+    throw errors;
   }
 
   // console.log(`result: ${JSON.stringify(result)}`);
