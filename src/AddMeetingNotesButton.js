@@ -122,52 +122,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
     finally{
       setAddingMeetingNotes(false);
     }
-
-    
-    //await addingMeetingNotes();
-    //setAddingMeetingNotes(true);
-
-/*    console.log(`addMeetingNotes 1`);
-    setAddingMeetingNotes(true);
-    console.log(`Meeting title: ${meetingTitle}`);
-    await addMeetingNotes(meetingDescriptionEl, meetingTitle);
-    setAddingMeetingNotes(false);
-  /*
-    new Promise(
-      (resolve) => {
-        chrome.runtime.sendMessage(
-          {
-              meetingTitle: meetingTitle
-          }, 
-          (response) => {
-            setAddingMeetingNotes(false);
-
-              console.log('addMeetingNotesButton clicked response', response);
-              
-              if(response.meetingNotesDocUrl) {
-                  // console.log(`getMeetingNotesTitle: ${getMeetingNotesTitle()}`);
-                  addNotesDocToMeetingDescription(meetingDescriptionEl, response.meetingNotesDocUrl)
-              } else {
-  
-              }
-            }
-        )  
-      }
-    );*/
   }
-/*
-  
-
-  const cancelAddMeetingNotesDialog = () => {
-    setAddMeetingNotesDialogOpen(false);
-  };
-
-  const handleAddMeetingNotesButtonPressed = () => {
-    setAddMeetingNotesDialogOpen(false);
-    setAddingMeetingNotes(true);
-    addMeetingtNotes();
-  };
-*/
 
   const addMeetingtNotes = async () => {
     
