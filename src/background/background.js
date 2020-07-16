@@ -110,6 +110,8 @@ const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, m
       const errorMessage = errors[0].message;
 
       // Get the id of the folder or file not found
+      // Just extracting the id from the error message since it's not available as a property on
+      // the error :-/
       const notFoundId = errorMessage.substring(errorMessage.indexOf(": ")+2, errorMessage.length-1);
 
       // Set the mesage to an application level message
