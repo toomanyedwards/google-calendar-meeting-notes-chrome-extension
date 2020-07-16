@@ -175,31 +175,54 @@ const setGoogleDriveFileSharingPrivate = async (fileId) => {
 } 
 
 const setGoogleDriveFileSharingDomain = async (fileId, userDomain) => {
-  console.log(`setGoogleDriveFileSharingDomain: ${fileId} ${userDomain}`);
-  await setGoogleDriveFilePermissions(
-    fileId,
-    {
-      role: "writer",
-      type: "domain",
-      domain: userDomain,
-      withLink: false,
-      allowFileDiscovery: true
+  try{
+    console.log(`setGoogleDriveFileSharingDomain: ${fileId} ${userDomain}`);
+    await setGoogleDriveFilePermissions(
+      fileId,
+      {
+        role: "writer",
+        type: "domain",
+        domain: userDomain,
+        withLink: false,
+        allowFileDiscovery: true
+      }
+    );
+  }catch(errors) {
+    console.log(`setGoogleDriveFileSharingDomain errors: ${errors}`);
+
+    if( errors.length === 1 && errors[0].reason === "insufficientFilePermissions" ){
+      // Set the mesage to an application level message
+      errors[0].originalMessage = errors[0].message;
+      errors[0].message = `You do not have permissions to share this file with the ${userDomain} domain.`;
     }
-  );
+
+    throw errors;
+  }
 }
 
 const setGoogleDriveFileSharingPublic = async (fileId) => {
   console.log(`setGoogleDriveFileSharingPublic ${fileId}`);
-  
-  await setGoogleDriveFilePermissions(
-    fileId,
-    {
-      role: "writer",
-      type: "anyone",
-      withLink: false,
-      allowFileDiscovery: true
+  try{
+    await setGoogleDriveFilePermissions(
+      fileId,
+      {
+        role: "writer",
+        type: "anyone",
+        withLink: false,
+        allowFileDiscovery: true
+      }
+    );
+  }catch(errors) {
+    console.log(`setGoogleDriveFileSharingPublic errors: ${errors}`);
+
+    if( errors.length === 1 && errors[0].reason === "insufficientFilePermissions" ){
+      // Set the mesage to an application level message
+      errors[0].originalMessage = errors[0].message;
+      errors[0].message = `You do not have permissions to share this file as public.`;
     }
-  );
+
+    throw errors;
+  }
 }
 
 /**
