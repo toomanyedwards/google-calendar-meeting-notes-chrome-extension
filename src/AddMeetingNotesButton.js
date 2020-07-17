@@ -74,8 +74,8 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
           {
             meetingNotesTitle: meetingTitle + " Notes",
             // civitas
-            meetingNotesTemplateId: "1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI",
-            meetingNotesFolderId: "1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK",
+            meetingNotesTemplate: {id:"1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI", name: "some meeting notes template"},
+            meetingNotesFolder: {id: "1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK", name: "some meeting notes folder name"},
 
             // google
             //meetingNotesTemplateId: "1bAoZmcWXQnofin2esddfdTWB0Ko0MkNJBsQPpS9SZS4",

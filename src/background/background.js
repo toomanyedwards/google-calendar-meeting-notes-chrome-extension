@@ -82,17 +82,17 @@ const deleteGoogleDriveFile = async (fileId) => {
   }
 }
 
-const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId) => {
-  console.log(`copyNotesDocTemplate: ${meetingNotesTemplateId} ${meetingNotesTitle} ${meetingNotesFolderId}`);
+const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplate, meetingNotesFolder) => {
+  console.log(`copyNotesDocTemplate: meetingNotesTitle: ${meetingNotesTitle} meetingNotesTemplate: ${JSON.stringify(meetingNotesTemplate)} meetingNotesFolder: ${JSON.stringify(meetingNotesFolder)}`);
   
   try {
     
     const result = await gapi.client.drive.files.copy(
       {
-        fileId: meetingNotesTemplateId,
+        fileId: meetingNotesTemplate.id,
         resource: {
           name: meetingNotesTitle,
-          parents:[meetingNotesFolderId]
+          parents:[meetingNotesFolder.id]
         } 
       }
     );
@@ -114,22 +114,26 @@ const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplateId, m
       // the error :-/
       const notFoundId = errorMessage.substring(errorMessage.indexOf(": ")+2, errorMessage.length-1);
 
-      // Set the mesage to an application level message
-      errors[0].originalMessage = errors[0].message;
-      errors[0].message = `Could not find the file: ${notFoundId}.`;
+      if(notFoundId === meetingNotesTemplate.id) {
+          // Set the mesage to an application level message
+        errors[0].originalMessage = errors[0].message;
+        errors[0].message = `Could not find the notes template file: ${meetingNotesTemplate.name}.`;
+      } else if (notFoundId === meetingNotesFolder.id) {
+        // Set the mesage to an application level message
+        errors[0].originalMessage = errors[0].message;
+        errors[0].message = `Could not find the notes folder: ${meetingNotesFolder.name}.`;
+      }
     }
 
     throw errors;
   }
-
-  // console.log(`result: ${JSON.stringify(result)}`);
 }
 
 
 /**
  * Handle the add notes button clicked
  */
-const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId, meetingNotesSharing}) => {
+const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTemplate, meetingNotesFolder, meetingNotesSharing}) => {
   console.log(`handleAddNotesButtonClicked: ${meetingNotesTitle}`);
 
   
@@ -137,7 +141,7 @@ const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTempl
   var errors = [];
   var fileId;
   try{
-    fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplateId, meetingNotesFolderId);
+    fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplate, meetingNotesFolder);
   }catch(copyFileErrors) {
     console.log(`handleAddNotesButtonClicked.copyFileErrors: ${JSON.stringify(copyFileErrors)}`);
     errors = errors.concat(copyFileErrors);
@@ -290,13 +294,6 @@ chrome.extension.onMessage.addListener(
     console.log(`Message received: ${JSON.stringify(request)}`);
      // setGapiToken();
   
-    console.log("Message received 2");
-    //listFiles2();
-    console.log("Message received 3");
-
-    //sendResponse({meetingNotesDocUrl: await handleAddNotesButtonClicked(request.meetingTitle)});
-    //return true;
-   
     
     handleAddNotesButtonClicked(request).
       then( 
@@ -311,16 +308,6 @@ chrome.extension.onMessage.addListener(
       );
     
     return true;
-    /*
-    switch(request.message) {
-      case ADD_NOTES_BUTTON_CLICKED_MSG: 
-        const result = await handleAddNotesButtonClicked(request.meetingTitle);
-
-        console.log(`File id: ${getGoogleDocUrlForId(result.result.id)}`)
-        sendResponse({meetingNotesDocUrl:getGoogleDocUrlForId(result.result.id)})
-    }
-    sendResponse({meetingNotesDocUrl:"foo"});
-    */
 
   }
 );
