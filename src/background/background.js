@@ -320,14 +320,16 @@ const listFiles = async () => {
   console.log("Listing files")
   response = await gapi.client.drive.files.list(
     {
+      orderBy:"name",
+      q:"'root' in parents and trashed=false",
       'pageSize': 10,
-      'fields': "nextPageToken, files(id, name)"
+      'fields': "nextPageToken, files(id, name, mimeType, trashed)"
     }
   );
 
   response.result.files.forEach(
     (file)  => {
-      console.log(`${file.name} (${file.id})`)
+      console.log(`${file.name} (${file.id}): ${JSON.stringify(file)}`)
     }
   ); 
 }
