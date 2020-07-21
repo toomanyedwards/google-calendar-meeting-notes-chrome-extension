@@ -290,22 +290,26 @@ const setGoogleDriveFilePermissions = async (fileId, permissions) => {
  * Listen for messages from content script
  */
 chrome.extension.onMessage.addListener(
-  (request, sender, sendResponse) => {
-    console.log(`Message received: ${JSON.stringify(request)}`);
+  (message, sender, sendResponse) => {
+    console.log(`Message received: ${JSON.stringify(message)}`);
      // setGapiToken();
   
+    switch(message.type) {
+      case "addNotes":
     
-    handleAddNotesButtonClicked(request).
-      then( 
-        (fileId)=>{
-          sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
-        }
-      ).catch(
-        (errors) => {
-          console.log(`handleAddNotesButtonClicked errors: ${JSON.stringify(errors)}`);
-          sendResponse({errors});
-        }
-      );
+        handleAddNotesButtonClicked(message).
+          then( 
+            (fileId)=>{
+              sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
+            }
+          ).catch(
+            (errors) => {
+              console.log(`handleAddNotesButtonClicked errors: ${JSON.stringify(errors)}`);
+              sendResponse({errors});
+            }
+          );
+        break;
+    }
     
     return true;
 

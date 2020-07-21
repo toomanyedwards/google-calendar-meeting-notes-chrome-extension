@@ -72,7 +72,7 @@ const loadChildrenPaginated = async (node, pageLimit = 5) => {
     return children;
   };
   
-const SelectGoogleDriveResourceDialog = ({open, setOpen}) => {  
+const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {  
     const onCancel = () => {
         setOpen(false);
     }

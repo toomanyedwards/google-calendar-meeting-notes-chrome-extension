@@ -133,7 +133,7 @@ maxWidth = {'xs'}>
                     <TextField
                         id="standard-read-only-input"
                         variant="outlined"
-                        defaultValue="<none selectedkjgjhgjhgkjhgkjhfkghfgffhkgfhjgfjhgfhjgfhjgf>"
+                        defaultValue="<none selected>"
                         fullWidth
                         InputProps={{
                             readOnly: true,
