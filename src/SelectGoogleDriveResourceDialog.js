@@ -1,4 +1,6 @@
-import React from 'react';
+/*global chrome*/
+
+import React, {useEffect} from 'react';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -73,25 +75,56 @@ const loadChildrenPaginated = async (node, pageLimit = 5) => {
   };
   
 const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {  
-    const onCancel = () => {
-        setOpen(false);
+  const [areNodesLoaded, setNodesLoaded] = React.useState(false);
+  var treeNodes;
+
+  useEffect(() => {
+    async function listGoogleDrive() {
+      console.log(`useEffect 1`)
+      if(open && !areNodesLoaded) {
+        console.log(`useEffect 2`)
+        await sleep(5000);
+        console.log(`useEffect 3`)
+      
+        setNodesLoaded(true);
+      } else if (!open) {
+        setNodesLoaded(false);
+      }
     }
+
+    listGoogleDrive()
+  })
+  /*nodes={JSON.parse(JSON.stringify(lazySample))}*/
+
+  const onCancel = () => {
+      setOpen(false);
+  }
     
+
+  const getNodes = (open) => {
+    console.log(`getNodes1: open: Foo${open}`);
+    return JSON.parse(JSON.stringify(lazySample));
+  }
     return (
+      
         <Dialog maxWidth="lg" open={open}  aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Select a Notes Template File</DialogTitle>
             <DialogContent>
                 <FormControl size="small" margin="dense">
-                    <Tree
-                        nodes={JSON.parse(JSON.stringify(lazySample))}
-                        loadChildren={loadChildrenPaginated}
-                        pageLimit={3}
-                        theme={minimalTheme}
-                        paginated
-                        useLocalState
-                        Checkbox={() => false}
-                        ListItem={MyListItem}
-                    />
+                { areNodesLoaded? 
+                  <Tree
+                  nodes={JSON.parse(JSON.stringify(lazySample))}
+                      id="tree"
+                      loadChildren={loadChildrenPaginated}
+                      pageLimit={3}
+                      theme={minimalTheme}
+                      paginated
+                      useLocalState
+                      Checkbox={() => false}
+                      ListItem={MyListItem}
+                  />:
+                  <div/>
+                }
                 </FormControl>
             </DialogContent>
         
@@ -101,6 +134,36 @@ const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {
             </DialogActions>
         </Dialog>
     );
+}
+
+const listGoogleDrive = () => {
+    return new Promise(
+    (resolve, reject) => {
+      chrome.runtime.sendMessage(
+        {
+          type: "listGoogleDrive",
+          listParams: {
+            orderBy:"name",
+            q:"'root' in parents and trashed=false",
+            'pageSize': 10,
+            'fields': "nextPageToken, files(id, name, mimeType, trashed)"
+          }
+        }, 
+        response => {
+            console.log(`listGoogleDrive response: ${JSON.stringify(response)}`);
+            
+            if(response.result.files) {
+              resolve(response);
+            } else {
+              const errors = response.errors;
+              console.log(`listGoogleDrive errors: ${errors}`);
+              reject(errors);
+            }
+            resolve(response);
+        }
+      )  
+    }
+  );
 }
 
 export default SelectGoogleDriveResourceDialog;

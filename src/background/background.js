@@ -296,7 +296,6 @@ chrome.extension.onMessage.addListener(
   
     switch(message.type) {
       case "addNotes":
-    
         handleAddNotesButtonClicked(message).
           then( 
             (fileId)=>{
@@ -308,13 +307,44 @@ chrome.extension.onMessage.addListener(
               sendResponse({errors});
             }
           );
+  
         break;
+      case "listGoogleDrive":
+        listGoogleDrive(message.listParams). 
+            then(
+              (filesList) => {
+                console.log(`listGoogleDrive 1: ${filesList}`);
+                sendResponse({filesList});
+              }
+            ).catch(
+              (errors) => {
+                console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
+                sendResponse({errors});
+              } 
+            );
+
     }
     
     return true;
 
   }
 );
+
+const listGoogleDrive = async (listParams) => {
+  try{
+    console.log(`listGoogleDrive: listingFiles`);
+    const response = await gapi.client.drive.files.list(listParams);
+    console.log(`listGoogleDrive: listingFiles`);
+    response.result.files.forEach(
+      (file)  => {
+        console.log(`${file.name} (${file.id}): ${JSON.stringify(file)}`)
+      }
+    ); 
+    return response.result.files;
+  }catch(error) {
+    console.log(`listGoogleDrive: ${JSON.stringify(error)}`);
+  }
+}
 
 const getGoogleDocUrlForId = (googleFileId) => {
   return `https://docs.google.com/document/d/${googleFileId}/edit?usp=sharing`
