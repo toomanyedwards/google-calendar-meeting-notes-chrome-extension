@@ -100,7 +100,7 @@ const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {
 
   const filesListToTreeNodes = (filesList) => {
     console.log(`filesListToTreeNodes 1`);
-    filesList.files.forEach(file => {
+    filesList.forEach(file => {
       googleDriveTreeNodes.push({
         id: file.id,
         name: file.name,
@@ -191,9 +191,9 @@ const listGoogleDrive = () => {
         {
           type: "listGoogleDrive",
           listParams: {
-            orderBy:"name",
+            orderBy:"folder, name",
             q:"'root' in parents and trashed=false",
-            'pageSize': 100,
+            'pageSize': 10,
             'fields': "nextPageToken, files(id, name, mimeType)"
           }
         }, 

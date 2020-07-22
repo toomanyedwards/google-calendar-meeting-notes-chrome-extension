@@ -23,7 +23,7 @@ onGAPILoad = async () => {
 
   await setGapiToken();
   
-  listFiles();
+  //listFiles();
   
 }
 
@@ -333,9 +333,17 @@ chrome.extension.onMessage.addListener(
 const listGoogleDrive = async (listParams) => {
   
     console.log(`listGoogleDrive: listingFiles`);
+    var filesList = [];
     try{
-      const result = await gapi.client.drive.files.list(listParams);
-      filesList = result.result;
+      do {
+        
+        const response = await gapi.client.drive.files.list(listParams);
+        console.log(`listGoogleDrive: Page: ${JSON.stringify(response)}`);
+        
+        listParams.pageToken = response.result.nextPageToken;
+        filesList = filesList.concat(response.result.files);
+      }while(listParams.pageToken)
+      
 
       console.log(`listGoogleDrive: ${JSON.stringify(filesList)}`);
 
