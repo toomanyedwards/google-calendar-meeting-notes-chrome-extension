@@ -331,39 +331,22 @@ chrome.extension.onMessage.addListener(
 );
 
 const listGoogleDrive = async (listParams) => {
-  try{
+  
     console.log(`listGoogleDrive: listingFiles`);
-    const response = await gapi.client.drive.files.list(listParams);
+    try{
+      const result = await gapi.client.drive.files.list(listParams);
+      filesList = result.result;
+
+      console.log(`listGoogleDrive: ${JSON.stringify(filesList)}`);
+
+      return filesList;
+    }
+    catch(e) {
+      const errors = e.result.error.errors;
+      console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
+      throw errors;
+    }
     console.log(`listGoogleDrive: listingFiles`);
-    response.result.files.forEach(
-      (file)  => {
-        console.log(`${file.name} (${file.id}): ${JSON.stringify(file)}`)
-      }
-    ); 
-    return response.result.files;
-  }catch(error) {
-    console.log(`listGoogleDrive: ${JSON.stringify(error)}`);
+   
   }
-}
-
-const getGoogleDocUrlForId = (googleFileId) => {
-  return `https://docs.google.com/document/d/${googleFileId}/edit?usp=sharing`
-}
-
-const listFiles = async () => {
-  console.log("Listing files")
-  response = await gapi.client.drive.files.list(
-    {
-      orderBy:"name",
-      q:"'root' in parents and trashed=false",
-      'pageSize': 10,
-      'fields': "nextPageToken, files(id, name, mimeType, trashed)"
-    }
-  );
-
-  response.result.files.forEach(
-    (file)  => {
-      console.log(`${file.name} (${file.id}): ${JSON.stringify(file)}`)
-    }
-  ); 
-}
+   

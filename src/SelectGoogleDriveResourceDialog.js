@@ -30,7 +30,7 @@ const MyListItem = (props) => {
     );
   
 }
-
+var googleDriveTreeNodes;
 const lazySample = [
     {
       id: 1,
@@ -47,11 +47,11 @@ const lazySample = [
       name: '2018',
       description: 'Current Year',
       children: [],
-      page: 0,
+      page: 1,
       numChildren: 5,
       expanded: false,
       selected: false,
-    },
+    }
   ]
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -75,26 +75,73 @@ const loadChildrenPaginated = async (node, pageLimit = 5) => {
   };
   
 const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {  
-  const [areNodesLoaded, setNodesLoaded] = React.useState(false);
-  var treeNodes;
+  const [isTreeInitialized, setTreeInitialized] = React.useState(false);
+ 
 
   useEffect(() => {
-    async function listGoogleDrive() {
-      console.log(`useEffect 1`)
-      if(open && !areNodesLoaded) {
-        console.log(`useEffect 2`)
-        await sleep(5000);
-        console.log(`useEffect 3`)
-      
-        setNodesLoaded(true);
+    async function initializeTreeNodes() {
+      console.log(`useEffect 1`);
+      if(open && !isTreeInitialized) {
+        googleDriveTreeNodes = [];
+        console.log(`useEffect 2`);
+        const filesList = await listGoogleDrive();
+        console.log(`useEffect 3: ${filesList}`);
+        filesListToTreeNodes(filesList);
+        setTreeInitialized(true);
       } else if (!open) {
-        setNodesLoaded(false);
+        // Invalidate the nodes when the component is hidden
+        // Perhaps optimize and support explicit refresh later
+        setTreeInitialized(false);
       }
     }
 
-    listGoogleDrive()
+    initializeTreeNodes()
   })
-  /*nodes={JSON.parse(JSON.stringify(lazySample))}*/
+
+  const filesListToTreeNodes = (filesList) => {
+    console.log(`filesListToTreeNodes 1`);
+    filesList.files.forEach(file => {
+      googleDriveTreeNodes.push({
+        id: file.id,
+        name: file.name,
+        description: '',
+        children: [],
+        numChildren: file.mimeType === "application/vnd.google-apps.folder"?1:0,
+        page: 0,
+        expanded: false,
+        selected: false,
+      }
+
+      );
+    });
+
+    console.log(`filesListToTreeNodes 2: ${JSON.stringify(lazySample)}`);
+
+    /*
+{"id":"1gwC1oP6Dsu3YfselNez2ByW2NPqsFJT5ZLRxhNd3Ics","name":"AWS Spend/DOPE Notes","description":"","children":[],"numChildren":0,"page":0,"expanded":false,"selected":false}
+    */
+    /*googleDriveTreeNodes = [
+      {
+        id: 1,
+        name: '2017',
+        description: 'Last Year',
+        children: [],
+        page: 0,
+        numChildren: 0,
+        expanded: false,
+        selected: false,
+      }
+    ];*/
+    console.log(`filesListToTreeNodes 3: ${JSON.stringify(googleDriveTreeNodes)}`);
+    console.log(`filesListToTreeNodes 4: ${JSON.stringify(lazySample)}`);
+    JSON.parse(JSON.stringify(lazySample));
+    
+    console.log(`filesListToTreeNodes 5`);
+    
+    JSON.parse(JSON.stringify(googleDriveTreeNodes));
+
+    console.log(`filesListToTreeNodes 6`);
+  }
 
   const onCancel = () => {
       setOpen(false);
@@ -111,9 +158,9 @@ const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {
             <DialogTitle id="form-dialog-title">Select a Notes Template File</DialogTitle>
             <DialogContent>
                 <FormControl size="small" margin="dense">
-                { areNodesLoaded? 
+                { isTreeInitialized? 
                   <Tree
-                  nodes={JSON.parse(JSON.stringify(lazySample))}
+                  nodes={googleDriveTreeNodes}
                       id="tree"
                       loadChildren={loadChildrenPaginated}
                       pageLimit={3}
@@ -122,6 +169,7 @@ const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {
                       useLocalState
                       Checkbox={() => false}
                       ListItem={MyListItem}
+                      classes
                   />:
                   <div/>
                 }
@@ -145,15 +193,15 @@ const listGoogleDrive = () => {
           listParams: {
             orderBy:"name",
             q:"'root' in parents and trashed=false",
-            'pageSize': 10,
-            'fields': "nextPageToken, files(id, name, mimeType, trashed)"
+            'pageSize': 100,
+            'fields': "nextPageToken, files(id, name, mimeType)"
           }
         }, 
         response => {
             console.log(`listGoogleDrive response: ${JSON.stringify(response)}`);
             
-            if(response.result.files) {
-              resolve(response);
+            if(response.filesList) {
+              resolve(response.filesList);
             } else {
               const errors = response.errors;
               console.log(`listGoogleDrive errors: ${errors}`);
