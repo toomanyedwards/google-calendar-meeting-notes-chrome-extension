@@ -9,6 +9,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import FolderIcon from '@material-ui/icons/Folder';
 import DocumentIcon from '@material-ui/icons/Description';
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 
 
@@ -277,6 +279,18 @@ const GoogleDriveTreeControl = ({open, onSelectionChanged}) => {
     }
 
     return (
+        !isTreeInitialized?
+         (<div style={{
+            position: 'relative',
+            display:'flex',
+            width:"100%",
+            justifyContent: 'center'
+    
+            }}>
+        
+                <CircularProgress />
+            </div>)
+            :(
         <TreeView
             defaultCollapseIcon={<ExpandMoreIcon />}
             defaultExpandIcon={<ChevronRightIcon />}
@@ -289,7 +303,7 @@ const GoogleDriveTreeControl = ({open, onSelectionChanged}) => {
 
         >
         {renderTreeItems(ROOT_NODE_ID)}
-        </TreeView>
+        </TreeView>)
     );
 }
 

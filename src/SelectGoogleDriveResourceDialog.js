@@ -52,10 +52,10 @@ const SelectGoogleDriveResourceDialog = ({open, setOpen}) => {
     <Dialog maxWidth="lg" open={open}  aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Select a Notes Template File</DialogTitle>
       <DialogContent>
-        <FormControl size="small" margin="dense">
+        
           <GoogleDriveTreeControl id="1" name="Applications" open={open} onSelectionChanged={onSelectionChanged}/>
         
-        </FormControl>
+        
       </DialogContent>
   
       <DialogActions>
