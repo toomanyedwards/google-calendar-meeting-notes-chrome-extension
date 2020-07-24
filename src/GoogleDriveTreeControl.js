@@ -5,14 +5,29 @@ import TreeView from "@material-ui/lab/TreeView";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
+import { makeStyles } from '@material-ui/core/styles';
+
 const { useState } = React;
 
 const ROOT_NODE_ID = "root";
 
-const GoogleDriveTreeControl = ({open}) => {
+
+const GDTCTreeItem = (props) => {
+    return (
+        <TreeItem 
+            onMouseEnter={(event)=>{console.log(`onMouseEnter: ${event.relatedTarget.tagName}`)}}
+            
+            {...props}
+            
+        />
+    );
+}
+
+const GoogleDriveTreeControl = ({open, onSelectionChanged}) => {
     const [treeData, setTreeData] = useState({});
     
     const [expanded, setExpanded] = React.useState([]);
+    const [selected, setSelected] = React.useState("");
     const [isTreeInitialized, setTreeInitialized] = useState(false);
 
 
@@ -65,24 +80,19 @@ const GoogleDriveTreeControl = ({open}) => {
             const node = treeData.treeNodeMap.get(nodeId);    
             
             if(node.isFolder && !node.childrenLoaded) {
-                return (<TreeItem key={nodeId} nodeId={nodeId} label={node.label}><div>Loading...</div></TreeItem>)
+                return (<GDTCTreeItem key={nodeId} nodeId={nodeId} label={node.name}><div>Loading...</div></GDTCTreeItem>)
             }
             else {
                 console.log("rendering children")
                 return (
-                    <TreeItem key={nodeId} nodeId={nodeId} label={node.label}>
+                    <GDTCTreeItem key={nodeId} nodeId={nodeId} label={node.name}>
                         {Array.isArray(nodeChildrenIds) ? nodeChildrenIds.map((childId) => renderTreeItems(childId)) : null}
-                    </TreeItem>
+                    </GDTCTreeItem>
                 );
             }
         }    
     }
-        /*
-        <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name}>
-          {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
-        </TreeItem>
-      );
-*/
+        
     useEffect(() => {
         async function initializeTreeItems() {
           console.log(`useEffect 1`);
@@ -90,12 +100,11 @@ const GoogleDriveTreeControl = ({open}) => {
             console.log(`useEffect 2`);
             const filesList = await listGoogleDrive();
             
-            //setNodeChildrenMap(new Map());
             const childNodes = filesList.map(
                 file => {
                     return {
                         id: file.id,
-                        label: file.name,
+                        name: file.name,
                         isFolder: file.mimeType === "application/vnd.google-apps.folder",
                         childrenLoaded: false
                     };
@@ -104,32 +113,9 @@ const GoogleDriveTreeControl = ({open}) => {
             console.log(`childNodes: ${JSON.stringify(childNodes)}`);
 
             addChildNodes(ROOT_NODE_ID, childNodes);
-            console.log(`useEffect 4`);
-            /*
-            setTreeItems(
-                filesList.map(
-                    file => {
-                        if( file.mimeType === "application/vnd.google-apps.folder") {
-                            return (
-                                <TreeItem nodeId={file.id} label={file.name} childrenLoaded={false} children={<TreeItem nodeId="foo" label="bar"/>}>
-                                    <div>Loading...</div>
-                                </TreeItem>
-                            );
-                        }
-                        else {
-                            return (<TreeItem nodeId={file.id} label={file.name}/>);
-                        }
-                    }
-                )
-            );
-            */
-            //const filesList = await listGoogleDrive();
-            //setTreeItems (<TreeItem id="1" label="Foo"/>);
-            /*
-            console.log(`useEffect 2`);
-            const filesList = await listGoogleDrive();
-            console.log(`useEffect 3: ${filesList}`);
-            filesListToTreeNodes(filesList);*/
+            
+            
+            
             console.log(`Initialized`);
             setTreeInitialized(true);
             
@@ -165,7 +151,7 @@ const GoogleDriveTreeControl = ({open}) => {
                             file => {
                                 return {
                                     id: file.id,
-                                    label: file.name,
+                                    name: file.name,
                                     isFolder: file.mimeType === "application/vnd.google-apps.folder",
                                     childrenLoaded: false
                                 };
@@ -179,23 +165,43 @@ const GoogleDriveTreeControl = ({open}) => {
                 
                 );
             } 
-            /*fetchChildNodes(childId).then(result =>
-              setChildNodes(
-                result.children.map(node => <MyTreeItem key={node.id} {...node} />)
-              
-            );
-          }
-        listGoogleDrive(modes)
-        */
+            
         }
 
     }
+    const onNodeSelect = (event, nodeId) => {
+        const node = treeData.treeNodeMap.get(nodeId)
+        console.log(`onNodeSelect`);
+        /*if (event.target.closest('.MuiTreeItem-iconContainer')) {
+            return;
+        }*/
+        // Don't select folders
+        if(node.isFolder) {
+            return;
+        }
+
+    
+
+        if (selected === nodeId) {
+            console.log(`Deselected: ${node.name}`);
+            setSelected("");
+            onSelectionChanged(null);
+        } else {
+            console.log(`Selected: ${node.name}`);
+            setSelected(nodeId);
+            onSelectionChanged(node);
+        }
+    }
+
     return (
         <TreeView
             defaultCollapseIcon={<ExpandMoreIcon />}
             defaultExpandIcon={<ChevronRightIcon />}
             expanded={expanded}            
             onNodeToggle={onNodeToggle}
+            onNodeSelect={onNodeSelect}
+            selected={selected}
+            
 
 
         >
@@ -205,90 +211,7 @@ const GoogleDriveTreeControl = ({open}) => {
 }
 
 export default GoogleDriveTreeControl;
-/*
-export default function MyTreeItem(props) {
-  const [treeNodes, setTreeNodes] = useState(null);
-  const [isTreeInitialized, setTreeInitialized] = useState(false);
-  const [expanded, setExpanded] = React.useState([]);
 
-  useEffect(() => {
-    async function initializeTreeNodes() {
-      console.log(`useEffect 1`);
-      if(props.open && !isTreeInitialized) {
-        
-        console.log(`useEffect 2`);
-        const filesList = await listGoogleDrive();
-        console.log(`useEffect 3: ${filesList}`);
-        filesListToTreeNodes(filesList);
-        setTreeInitialized(true);
-      } else if (!props.open) {
-        // Invalidate the nodes when the component is hidden
-        // Perhaps optimize and support explicit refresh later
-        setTreeInitialized(false);
-      }
-    }
-
-    initializeTreeNodes()
-  })
-
-  const filesListToTreeNodes = (filesList) => {
-    
-    setTreeNodes(
-        filesList.map(file => <MyTreeItem key={file.id} {...file} />)
-    )
-  }
-  
-  function fetchChildNodes(id) {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve({
-          children: [
-            {
-              id: "2",
-              name: "Calendar"
-            },
-            {
-              id: "3",
-              name: "Settings"
-            },
-            {
-              id: "4",
-              name: "Music"
-            }
-          ]
-        });
-      }, 1000);
-    });
-  }
-
-  const handleChange = (event, nodes) => {
-    const expandingNodes = nodes.filter(x => !expanded.includes(x));
-    setExpanded(nodes);
-    if (expandingNodes[0]) {
-      const childId = expandingNodes[0];
-      /*fetchChildNodes(childId).then(result =>
-        setChildNodes(
-          result.children.map(node => <MyTreeItem key={node.id} {...node} />)
-        
-      );
-    }
-  };
-
-  return (
-    <TreeView
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
-      expanded={expanded}
-      onNodeToggle={handleChange}
-    >
-        
-
-        {/*{treeNodes || [<div key="stub" />]}
-      
-    </TreeView>
-  );
-}
-*/
 const listGoogleDrive = (folderId="root") => {
     return new Promise(
     (resolve, reject) => {
