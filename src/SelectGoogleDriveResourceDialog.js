@@ -12,72 +12,35 @@ import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import ListItem from '@material-ui/core/ListItem';
 
+import Checkbox from '@material-ui/core/Checkbox';
+import { createMuiTheme } from "@material-ui/core/styles";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+
+import TreeView from '@material-ui/lab/TreeView';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import TreeItem from '@material-ui/lab/TreeItem';
+import GoogleDriveTreeControl from './GoogleDriveTreeControl';
 
 
 const useStyles = makeStyles({
-    root: {
-      '& p': {
-        margin: 0,
-      },
-    },
-  });
+  root: {
+    height: 216,
+    flexGrow: 1,
+    maxWidth: 400,
+  },
+});
 
-const MyListItem = (props) => {
-    const classes = useStyles();
 
-    return (
-        <ListItem className={classes.root} dense={true} {...props}/>
-    );
-  
-}
 var googleDriveTreeNodes;
-const lazySample = [
-    {
-      id: 1,
-      name: '2017',
-      description: 'Last Year',
-      children: [],
-      page: 0,
-      numChildren: 5,
-      expanded: false,
-      selected: false,
-    },
-    {
-      id: 5,
-      name: '2018',
-      description: 'Current Year',
-      children: [],
-      page: 1,
-      numChildren: 5,
-      expanded: false,
-      selected: false,
-    }
-  ]
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-const loadChildrenPaginated = async (node, pageLimit = 5) => {
-    await sleep(500);
-    const children = [];
-    for (let i = 0; i < pageLimit; i += 1) {
-      children.push({
-        id: i * node.page,
-        name: `${node.name}${i + (node.page - 1) * pageLimit}`,
-        description: '',
-        children: [],
-        numChildren: pageLimit * 3,
-        page: 0,
-        expanded: false,
-        selected: false,
-      });
-    }
-    return children;
-  };
   
-const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {  
-  const [isTreeInitialized, setTreeInitialized] = React.useState(false);
+const SelectGoogleDriveResourceDialog = ({open, setOpen}) => {  
+  const classes = useStyles();
+  const [expanded, setExpanded] = React.useState([]);
+  const [selected, setSelected] = React.useState([]);
  
-
+  /*
   useEffect(() => {
     async function initializeTreeNodes() {
       console.log(`useEffect 1`);
@@ -117,21 +80,7 @@ const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {
 
     console.log(`filesListToTreeNodes 2: ${JSON.stringify(lazySample)}`);
 
-    /*
-{"id":"1gwC1oP6Dsu3YfselNez2ByW2NPqsFJT5ZLRxhNd3Ics","name":"AWS Spend/DOPE Notes","description":"","children":[],"numChildren":0,"page":0,"expanded":false,"selected":false}
-    */
-    /*googleDriveTreeNodes = [
-      {
-        id: 1,
-        name: '2017',
-        description: 'Last Year',
-        children: [],
-        page: 0,
-        numChildren: 0,
-        expanded: false,
-        selected: false,
-      }
-    ];*/
+
     console.log(`filesListToTreeNodes 3: ${JSON.stringify(googleDriveTreeNodes)}`);
     console.log(`filesListToTreeNodes 4: ${JSON.stringify(lazySample)}`);
     JSON.parse(JSON.stringify(lazySample));
@@ -142,46 +91,65 @@ const SelectGoogleDriveResourceDialog = ({gapi, open, setOpen}) => {
 
     console.log(`filesListToTreeNodes 6`);
   }
-
+*/
   const onCancel = () => {
       setOpen(false);
   }
     
+  const handleToggle = (event, nodeIds) => {
+    if (event.target.closest(".MuiTreeItem-iconContainer")) {
+      setExpanded(nodeIds);
+    }
+  };
 
-  const getNodes = (open) => {
-    console.log(`getNodes1: open: Foo${open}`);
-    return JSON.parse(JSON.stringify(lazySample));
+  const handleSelect= (_, newSelected) => {
+    if (selected === newSelected) {
+      console.log(`unselected: ${JSON.stringify(newSelected)}`);
+      setSelected("");
+    } else {
+      console.log(`selected: ${newSelected}`);
+      setSelected(newSelected);
+    }
   }
-    return (
-      
-        <Dialog maxWidth="lg" open={open}  aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Select a Notes Template File</DialogTitle>
-            <DialogContent>
-                <FormControl size="small" margin="dense">
-                { isTreeInitialized? 
-                  <Tree
-                  nodes={googleDriveTreeNodes}
-                      id="tree"
-                      loadChildren={loadChildrenPaginated}
-                      pageLimit={3}
-                      theme={minimalTheme}
-                      paginated
-                      useLocalState
-                      Checkbox={() => false}
-                      ListItem={MyListItem}
-                      classes
-                  />:
-                  <div/>
-                }
-                </FormControl>
-            </DialogContent>
-        
-            <DialogActions>
-                <Button  onClick={onCancel} color="primary">Cancel</Button>
-                <Button onClick={onCancel} color="primary">Select</Button>
-            </DialogActions>
-        </Dialog>
-    );
+    
+  return (
+    <Dialog maxWidth="lg" open={open}  aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">Select a Notes Template File</DialogTitle>
+      <DialogContent>
+        <FormControl size="small" margin="dense">
+          <GoogleDriveTreeControl id="1" name="Applications" open={open} />
+        {/*<TreeView
+      className={classes.root}
+      defaultCollapseIcon={<ExpandMoreIcon />}
+      defaultExpandIcon={<ChevronRightIcon />}
+      expanded={expanded}
+      selected={selected}
+      onNodeToggle={handleToggle}
+      onNodeSelect={handleSelect}
+    >
+      <TreeItem nodeId="1" label="Applications">
+        <TreeItem nodeId="2" label="Calendar" />
+        <TreeItem nodeId="3" label="Chrome" />
+        <TreeItem nodeId="4" label="Webstorm" />
+      </TreeItem>
+      <TreeItem nodeId="5" label="Documents">
+        <TreeItem nodeId="6" label="Material-UI">
+          <TreeItem nodeId="7" label="src">
+            <TreeItem nodeId="8" label="index.js" />
+            <TreeItem nodeId="9" label="tree-view.js" />
+          </TreeItem>
+        </TreeItem>
+      </TreeItem>
+    </TreeView>*/}
+        </FormControl>
+      </DialogContent>
+  
+      <DialogActions>
+        <Button  onClick={onCancel} color="primary">Cancel</Button>
+        <Button onClick={onCancel} color="primary">Select</Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
 
 const listGoogleDrive = () => {
@@ -193,8 +161,8 @@ const listGoogleDrive = () => {
           listParams: {
             orderBy:"folder, name",
             q:"'root' in parents and trashed=false",
-            'pageSize': 10,
-            'fields': "nextPageToken, files(id, name, mimeType)"
+            pageSize: 10,
+            fields: "nextPageToken, files(id, name, mimeType)"
           }
         }, 
         response => {

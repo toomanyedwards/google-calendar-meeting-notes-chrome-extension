@@ -8,6 +8,7 @@ import App from './App';
 import { createMuiTheme } from "@material-ui/core/styles";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 
+/*
 const theme = createMuiTheme({
   overrides: {
     MuiTreeView: {
@@ -22,6 +23,7 @@ const theme = createMuiTheme({
     }
   }
 });
+*/
 
 const MEETING_NOTES_BUTTON_CONTAINER_REACT_INJECT_EL_ID = "meeting_notes_button_container_react_injection_el";
 const ADD_MEETING_NOTES_BUTTON_CONTAINER_ID = "ADD_MEETING_NOTES_BUTTON_CONTAINER_ID";
@@ -81,9 +83,9 @@ const getMeetingTitle = () => {
 const insertReactAddMeetingNotesButtonContainer = (injectionEl, meetingDescriptionEl) => {
   ReactDOM.render(
     <React.StrictMode>
-      <MuiThemeProvider theme={theme}>
+      {/*<MuiThemeProvider theme={theme}>*/}
       <App meetingDescriptionEl={meetingDescriptionEl} userDomain={getUserDomain()} getMeetingTitle={getMeetingTitle} buttonContainerId={ADD_MEETING_NOTES_BUTTON_CONTAINER_ID}/>
-      </MuiThemeProvider>
+      {/*</MuiThemeProvider>*/}
     </React.StrictMode>,
     injectionEl
   );

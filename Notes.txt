@@ -76,3 +76,15 @@ https://noidea.dog/blog/chrome-identity-api-part-2
 https://www.npmjs.com/package/react-google-login
 
 https://bumbu.me/gapi-in-chrome-extension
+
+https://www.robinwieruch.de/react-hooks-fetch-data
+
+Expand tree using icon only:
+https://github.com/mui-org/material-ui/issues/19953
+https://www.npmjs.com/package/useseparatetoggleclick
+https://codesandbox.io/s/exciting-cohen-p7n3y?file=/src/App.js
+
+Allow deselection:
+https://github.com/mui-org/material-ui/issues/20098
+https://codesandbox.io/s/infallible-beaver-hbht7
+
