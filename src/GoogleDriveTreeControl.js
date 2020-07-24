@@ -62,16 +62,15 @@ const GoogleDriveTreeControl = ({open}) => {
                 return null;
             }
         } else {
-            console.log(`Map: ${JSON.stringify(treeData.nodetreeNodeMap)}`);
             const node = treeData.treeNodeMap.get(nodeId);    
             
             if(node.isFolder && !node.childrenLoaded) {
-                return (<TreeItem nodeId={nodeId} label={node.label}><div>Loading...</div></TreeItem>)
+                return (<TreeItem key={nodeId} nodeId={nodeId} label={node.label}><div>Loading...</div></TreeItem>)
             }
             else {
                 console.log("rendering children")
                 return (
-                    <TreeItem nodeId={nodeId} label={node.label}>
+                    <TreeItem key={nodeId} nodeId={nodeId} label={node.label}>
                         {Array.isArray(nodeChildrenIds) ? nodeChildrenIds.map((childId) => renderTreeItems(childId)) : null}
                     </TreeItem>
                 );
@@ -148,36 +147,38 @@ const GoogleDriveTreeControl = ({open}) => {
     
     
     
-    const onNodeToggle = (event, nodes) => {
-        console.log(`onNodeToggle: ${JSON.stringify(nodes)}`);
-        const expandingNodes = nodes.filter(x => !expanded.includes(x));
-        setExpanded(nodes);
+    const onNodeToggle = (event, nodeIds) => {
+        console.log(`onNodeToggle: ${JSON.stringify(nodeIds)}`);
+        const expandingNodes = nodeIds.filter(x => !expanded.includes(x));
+        setExpanded(nodeIds);
 
         if (expandingNodes[0]) {
             const nodeId = expandingNodes[0];
             const node = treeData.treeNodeMap.get(nodeId);
 
-            console.log(`onNodeToggle: ${JSON.stringify(node)}`);
+            console.log(`onNodeToggle 2: ${JSON.stringify(node)}`);
 
-            listGoogleDrive(nodeId).then(
-                filesList => {
-                    const childNodes = filesList.map(
-                        file => {
-                            return {
-                                id: file.id,
-                                label: file.name,
-                                isFolder: file.mimeType === "application/vnd.google-apps.folder",
-                                childrenLoaded: false
-                            };
-                        }
-                    )
-                    console.log(`childNodes: ${JSON.stringify(childNodes)}`);
-        
-                    addChildNodes(nodeId, childNodes);
-                }
-                
+            if(!node.childrenLoaded) {
+                listGoogleDrive(nodeId).then(
+                    filesList => {
+                        const childNodes = filesList.map(
+                            file => {
+                                return {
+                                    id: file.id,
+                                    label: file.name,
+                                    isFolder: file.mimeType === "application/vnd.google-apps.folder",
+                                    childrenLoaded: false
+                                };
+                            }
+                        )
+                        console.log(`childNodes: ${JSON.stringify(childNodes)}`);
             
-            ); 
+                        addChildNodes(nodeId, childNodes);
+                    }
+                    
+                
+                );
+            } 
             /*fetchChildNodes(childId).then(result =>
               setChildNodes(
                 result.children.map(node => <MyTreeItem key={node.id} {...node} />)
