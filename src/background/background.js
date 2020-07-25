@@ -333,6 +333,10 @@ chrome.extension.onMessage.addListener(
   }
 );
 
+const getGoogleDocUrlForId = (googleFileId) => {
+  return `https://docs.google.com/document/d/${googleFileId}/edit?usp=sharing`
+}
+
 const listGoogleDrive = async (listParams) => {
   
     console.log(`listGoogleDrive: listingFiles`);
