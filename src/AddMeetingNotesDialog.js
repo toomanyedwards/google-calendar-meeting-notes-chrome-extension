@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -83,28 +83,67 @@ const loadChildrenPaginated = async (node, pageLimit = 5) => {
   };
 
 const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => {  
-    const [isSelectGoogleDriveResourceDialogOpen, setSelectGoogleDriveResourceDialogOpen] = React.useState(false);
+    const [isSelectNotesTemplateDialogOpen, setSelectNotesTemplateDialogOpen] = React.useState(false);
+    const [isSelectNotesDestinationDialogOpen, setSelectNotesDestinationDialogOpen] = React.useState(false);
     const [sharingLevel, setSharingLevel] = React.useState('private');
+    const [notesTemplateInfo, setNotesTemplateInfo] = useState(null);
+    const [notesDestinationInfo, setNotesDestinationInfo] = useState(null);
       
     const handleSharingLevelChange = (event) => {
         setSharingLevel(event.target.value);
     };
 
 
-    const onCancel = () => {
+    const handleCancel = () => {
         setOpen(false);
     }
-    const onAddMeetingNotesButtonPressed = () => {
+    const handleAddMeetingNotesButtonPressed = () => {
         addMeetingNotes(
-                {sharingLevel, userDomain}
+                {
+                    sharing:{
+                        sharingLevel, 
+                        userDomain
+                    }, 
+                    notesTemplateInfo, 
+                    notesDestinationInfo
+                }
             );
     }
-    const onChangesNotesTemplateButtonPressed = () => {
-        setSelectGoogleDriveResourceDialogOpen(true);
+    const handleChangeNotesTemplateButtonPressed = () => {
+        setSelectNotesTemplateDialogOpen(true);
     }
+
+    const handleChangeNotesDestinationButtonPressed = () => {
+        setSelectNotesDestinationDialogOpen(true);
+    }
+
+    const handleNotesTemplateSelected = (notesTemplateInfo) => {
+        setNotesTemplateInfo(notesTemplateInfo);
+        console.log(`handleNotesTemplateSelected: ${JSON.stringify(notesTemplateInfo)}`);
+        
+    }
+
+    const handleNotesDestinationSelected = (notesDestinationInfo) => {
+        setNotesDestinationInfo(notesDestinationInfo);
+        console.log(`handleNotesDestinationSelected: ${JSON.stringify(notesDestinationInfo)}`);
+        
+    }
+
     return (
         <div>
-            <SelectGoogleDriveResourceDialog open={isSelectGoogleDriveResourceDialogOpen} setOpen={setSelectGoogleDriveResourceDialogOpen}/>
+            <SelectGoogleDriveResourceDialog 
+                open={isSelectNotesTemplateDialogOpen} 
+                setOpen={setSelectNotesTemplateDialogOpen} 
+                onSelectionConfirmed={handleNotesTemplateSelected} 
+                title="Select a Notes Template File"
+            />
+            <SelectGoogleDriveResourceDialog 
+                open={isSelectNotesDestinationDialogOpen} 
+                setOpen={setSelectNotesDestinationDialogOpen}
+                onSelectionConfirmed={handleNotesDestinationSelected} 
+                title="Select a Notes Destination Folder"
+                selectingFolder={true}
+            />
             <Dialog  open={open}  aria-labelledby="form-dialog-title" fullWidth={true}
 maxWidth = {'xs'}>
                 <DialogTitle id="form-dialog-title">Add Meeting Notes</DialogTitle>
@@ -116,14 +155,16 @@ maxWidth = {'xs'}>
                         id="standard-read-only-input"
                         size="medium"
                         fullWidth
-                        defaultValue="<none selected>"
+                        
+                        value={notesTemplateInfo?notesTemplateInfo.name:"<Click to select>"}
                         variant="outlined"
                         
                         InputProps={{
                             readOnly: true,
                         }}
+                        onClick={handleChangeNotesTemplateButtonPressed}
                     />
-                    <Button onClick={onChangesNotesTemplateButtonPressed} color="primary">Change</Button>
+                    
                     
                     <Box my={3}>
                     <DialogContentText>
@@ -133,14 +174,15 @@ maxWidth = {'xs'}>
                     <TextField
                         id="standard-read-only-input"
                         variant="outlined"
-                        defaultValue="<none selected>"
+                        value={notesDestinationInfo?notesDestinationInfo.name:"<Click to select>"}
                         fullWidth
                         InputProps={{
                             readOnly: true,
                         }}
+                        onClick={handleChangeNotesDestinationButtonPressed}
                     />
                  
-                    <Button onClick={onChangesNotesTemplateButtonPressed} color="primary">Change</Button>
+                 
                     </Box>
                     <Box my={2}>
                         <FormLabel component="legend">Sharing</FormLabel>
@@ -155,8 +197,8 @@ maxWidth = {'xs'}>
                     </Box>
                 </DialogContent>
                  <DialogActions>
-                    <Button onClick={onCancel} color="primary">Cancel</Button>
-                    <Button onClick={onAddMeetingNotesButtonPressed} color="primary">Add Notes</Button>
+                    <Button onClick={handleCancel} color="primary">Cancel</Button>
+                    <Button disabled={!!!notesTemplateInfo || !!!notesDestinationInfo} onClick={handleAddMeetingNotesButtonPressed} color="primary">Add Notes</Button>
                 </DialogActions>
             </Dialog>
         </div>

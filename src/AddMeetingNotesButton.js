@@ -66,7 +66,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
     setAddMeetingNotesDialogOpen(true);
   };
 
-  const addMeetingNotes = (meetingNotesSharing) => {
+  const addMeetingNotes = ({sharing, notesTemplateInfo, notesDestinationInfo}) => {
     const meetingTitle = getMeetingTitle();
     return new Promise(
       (resolve, reject) => {
@@ -74,14 +74,13 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
           {
             type: "addNotes",
             meetingNotesTitle: meetingTitle + " Notes",
-            // civitas
-            meetingNotesTemplate: {id:"1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI", name: "some meeting notes template"},
-            meetingNotesFolder: {id: "1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK", name: "some meeting notes folder name"},
+            meetingNotesTemplate: notesTemplateInfo,
+            meetingNotesFolder: notesDestinationInfo,
 
             // google
             //meetingNotesTemplateId: "1bAoZmcWXQnofin2esddfdTWB0Ko0MkNJBsQPpS9SZS4",
             //meetingNotesFolderId: " 1TNkioETxxx10b9Ikg0D0bZVbVSnW8XZt",
-            meetingNotesSharing
+            meetingNotesSharing:sharing
           }, 
           response => {
               console.log('addMeetingNotesButton clicked response', response);

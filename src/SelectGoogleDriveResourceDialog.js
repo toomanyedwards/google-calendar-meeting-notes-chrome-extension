@@ -7,7 +7,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Tree, minimalTheme } from 'react-lazy-paginated-tree';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import ListItem from '@material-ui/core/ListItem';
@@ -35,12 +34,22 @@ const useStyles = makeStyles({
 var googleDriveTreeNodes;
 
   
-const SelectGoogleDriveResourceDialog = ({open, setOpen}) => {  
+const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, title, selectingFolder}) => {  
   const classes = useStyles();
   const [selectionInfo, setSelectionInfo] = React.useState(null);
  
-    const onCancel = () => {
+  const handleCancel = () => {
       setOpen(false);
+  }
+
+  const handleSelectionConfirmed = () => {
+    onSelectionConfirmed(
+      {
+        id: selectionInfo.id,
+        name: selectionInfo.name
+      }
+    );
+    setOpen(false);
   }
     
   const onSelectionChanged = (selectionInfo) => {
@@ -50,17 +59,17 @@ const SelectGoogleDriveResourceDialog = ({open, setOpen}) => {
   
   return (
     <Dialog maxWidth="lg" open={open}  aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Select a Notes Template File</DialogTitle>
+      <DialogTitle id="form-dialog-title">{title}</DialogTitle>
       <DialogContent>
         
-          <GoogleDriveTreeControl id="1" name="Applications" open={open} onSelectionChanged={onSelectionChanged}/>
+          <GoogleDriveTreeControl id="1" name="Applications" open={open} onSelectionChanged={onSelectionChanged} selectingFolder={selectingFolder}/>
         
         
       </DialogContent>
   
       <DialogActions>
-        <Button  onClick={onCancel} color="primary">Cancel</Button>
-        <Button onClick={onCancel} disabled={!!!selectionInfo} color="primary">Select</Button>
+        <Button onClick={handleCancel} color="primary">Cancel</Button>
+        <Button onClick={handleSelectionConfirmed} disabled={!!!selectionInfo} color="primary">Select</Button>
       </DialogActions>
     </Dialog>
   );

@@ -105,7 +105,7 @@ const GDTCTreeItem = (props) => {
     );
 }
 
-const GoogleDriveTreeControl = ({open, onSelectionChanged}) => {
+const GoogleDriveTreeControl = ({open, onSelectionChanged, selectingFolder}) => {
     const [treeData, setTreeData] = useState({});
     
     const [expanded, setExpanded] = React.useState([]);
@@ -183,7 +183,7 @@ const GoogleDriveTreeControl = ({open, onSelectionChanged}) => {
           console.log(`useEffect 1`);
           if(open && !isTreeInitialized) {
             console.log(`useEffect 2`);
-            const filesList = await listGoogleDrive();
+            const filesList = await listGoogleDrive('root', selectingFolder);
             
             const childNodes = filesList.map(
                 file => {
@@ -220,6 +220,9 @@ const GoogleDriveTreeControl = ({open, onSelectionChanged}) => {
     
     const onNodeToggle = (event, nodeIds) => {
         console.log(`onNodeToggle: ${JSON.stringify(nodeIds)}`);
+        if (selectingFolder && !event.target.closest('.MuiTreeItem-iconContainer')) {
+            return;
+        }
         const expandingNodes = nodeIds.filter(x => !expanded.includes(x));
         setExpanded(nodeIds);
 
@@ -230,7 +233,7 @@ const GoogleDriveTreeControl = ({open, onSelectionChanged}) => {
             console.log(`onNodeToggle 2: ${JSON.stringify(node)}`);
 
             if(!node.childrenLoaded) {
-                listGoogleDrive(nodeId).then(
+                listGoogleDrive(nodeId, selectingFolder).then(
                     filesList => {
                         const childNodes = filesList.map(
                             file => {
@@ -257,11 +260,11 @@ const GoogleDriveTreeControl = ({open, onSelectionChanged}) => {
     const onNodeSelect = (event, nodeId) => {
         const node = treeData.treeNodeMap.get(nodeId)
         console.log(`onNodeSelect`);
-        /*if (event.target.closest('.MuiTreeItem-iconContainer')) {
+        if (selectingFolder && event.target.closest('.MuiTreeItem-iconContainer')) {
             return;
-        }*/
+        }
         // Don't select folders
-        if(node.isFolder) {
+        if(node.isFolder && !selectingFolder) {
             return;
         }
 
@@ -309,7 +312,7 @@ const GoogleDriveTreeControl = ({open, onSelectionChanged}) => {
 
 export default GoogleDriveTreeControl;
 
-const listGoogleDrive = (folderId="root") => {
+const listGoogleDrive = (folderId="root", selectingFolder) => {
     return new Promise(
     (resolve, reject) => {
       chrome.runtime.sendMessage(
@@ -317,7 +320,7 @@ const listGoogleDrive = (folderId="root") => {
           type: "listGoogleDrive",
           listParams: {
             orderBy:"folder, name",
-            q:`'${folderId}' in parents and trashed=false`,
+            q:`'${folderId}' in parents and trashed=false ${selectingFolder?'and mimeType = \'application/vnd.google-apps.folder\'':''}`,
             pageSize: 10,
             fields: "nextPageToken, files(id, name, mimeType)"
           }
