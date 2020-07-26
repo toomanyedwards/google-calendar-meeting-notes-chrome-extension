@@ -19,6 +19,7 @@ import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
+
 import GoogleDriveTreeControl from './GoogleDriveTreeControl';
 
 
@@ -34,7 +35,7 @@ const useStyles = makeStyles({
 var googleDriveTreeNodes;
 
   
-const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, title, selectingFolder}) => {  
+const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, title, selectingFolder=false}) => {  
   const classes = useStyles();
   const [selectionInfo, setSelectionInfo] = React.useState(null);
  
@@ -62,9 +63,9 @@ const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, t
       <DialogTitle id="form-dialog-title">{title}</DialogTitle>
       <DialogContent>
         
-          <GoogleDriveTreeControl id="1" name="Applications" open={open} onSelectionChanged={onSelectionChanged} selectingFolder={selectingFolder}/>
+          
         
-        
+      <GoogleDriveTreeControl id="1" name="Applications" open={open} onSelectionChanged={onSelectionChanged} selectingFolder={selectingFolder}/>
       </DialogContent>
   
       <DialogActions>

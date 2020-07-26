@@ -152,7 +152,7 @@ maxWidth = {'xs'}>
                         Notes Template:
                     </DialogContentText>
                     <TextField
-                        id="standard-read-only-input"
+                        id="notesTemplate"
                         size="medium"
                         fullWidth
                         
@@ -172,7 +172,7 @@ maxWidth = {'xs'}>
                     </DialogContentText>
                     
                     <TextField
-                        id="standard-read-only-input"
+                        id="notesDestination"
                         variant="outlined"
                         value={notesDestinationInfo?notesDestinationInfo.name:"<Click to select>"}
                         fullWidth
