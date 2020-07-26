@@ -50,7 +50,7 @@ const listGoogleDrive = (folderId="root", selectFolder) => {
               resolve(response.filesList);
             } else {
               const errors = response.errors;
-              console.log(`listGoogleDrive errors: ${errors}`);
+              console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
               reject(errors);
             }
             resolve(response);
