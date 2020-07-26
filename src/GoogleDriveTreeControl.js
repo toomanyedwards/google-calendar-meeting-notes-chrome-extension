@@ -8,7 +8,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 
 const GoogleDriveTreeControl = ({open, onSelectionChanged, allowFolderSelection=false, fileMimeTypes=[]}) => {
 
-  console.log(`GoogleDriveTreeControl: fileMimeTypes: ${JSON.stringify(fileMimeTypes)}`); 
+  console.log(`GoogleDriveTreeControl: fileMimeTypes: ${JSON.stringify(fileMimeTypes)} allowFolderSelection: ${allowFolderSelection}`); 
 
   const GOOGLE_DRIVE_FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
   const mimeTypes = [GOOGLE_DRIVE_FOLDER_MIME_TYPE].concat(fileMimeTypes);
