@@ -7,7 +7,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import Radio from '@material-ui/core/Radio';
@@ -135,6 +134,7 @@ const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => 
                 open={isSelectNotesTemplateDialogOpen} 
                 setOpen={setSelectNotesTemplateDialogOpen} 
                 onSelectionConfirmed={handleNotesTemplateSelected} 
+                fileMimeTypes={["application/vnd.google-apps.document"]}
                 title="Select a Notes Template File"
             />
             <SelectGoogleDriveResourceDialog 
@@ -142,7 +142,7 @@ const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => 
                 setOpen={setSelectNotesDestinationDialogOpen}
                 onSelectionConfirmed={handleNotesDestinationSelected} 
                 title="Select a Notes Destination Folder"
-                selectingFolder={true}
+                allowFolderSelection={true}
             />
             <Dialog  open={open}  aria-labelledby="form-dialog-title" fullWidth={true}
 maxWidth = {'xs'}>

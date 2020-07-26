@@ -35,7 +35,7 @@ const useStyles = makeStyles({
 var googleDriveTreeNodes;
 
   
-const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, title, selectingFolder=false}) => {  
+const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, title, selectingFolder=false, fileMimeTypes=[]}) => {  
   const classes = useStyles();
   const [selectionInfo, setSelectionInfo] = React.useState(null);
  
@@ -61,11 +61,16 @@ const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, t
   return (
     <Dialog maxWidth="lg" open={open}  aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">{title}</DialogTitle>
+
       <DialogContent>
-        
-          
-        
-      <GoogleDriveTreeControl id="1" name="Applications" open={open} onSelectionChanged={onSelectionChanged} selectingFolder={selectingFolder}/>
+        <GoogleDriveTreeControl
+          id="1" 
+          name="Applications" 
+          open={open} 
+          onSelectionChanged={onSelectionChanged} 
+          selectingFolder={selectingFolder} 
+          fileMimeTypes={fileMimeTypes}
+        />
       </DialogContent>
   
       <DialogActions>
