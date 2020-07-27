@@ -99,6 +99,7 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
   const [expanded, setExpanded] = React.useState([]);
   // id of the selected node (if any)
   const [selected, setSelected] = React.useState("");
+  const [errors, setErrors] = useState([]);
    // True, if the root children are loaded
   const [areRootChildrenLoaded, setRootChildrenLoaded] = useState(false);
 
@@ -106,8 +107,12 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
     () => {
       async function loadRootChildren() {
         if(open && !areRootChildrenLoaded) {
-          await addNodeChildren(ROOT_NODE_ID);
-          setRootChildrenLoaded(true);
+          if( await addNodeChildren(ROOT_NODE_ID)) {
+            setRootChildrenLoaded(true);
+            console.log(`Children loaded`);
+          } else{
+            console.log(`Children not loaded`);
+          }
         } else if (!open) {
           // Invalidate the nodes when the component is hidden
           // Perhaps optimize and support explicit refresh later
@@ -119,7 +124,17 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
   );
 
   const addNodeChildren = async (parentNodeId) => {
-    const childNodes = (parentNodeId === ROOT_NODE_ID)?await loadChildNodes():await loadChildNodes(parentNodeId);
+    
+    var childNodes;
+
+    try{
+      childNodes = (parentNodeId === ROOT_NODE_ID)?await loadChildNodes():await loadChildNodes(parentNodeId);
+    }
+    catch(errors) {
+      console.log(`LazyTreeView: addNodeChildren: Errors: ${JSON.stringify(errors)}`);
+      setErrors(errors);
+      return;
+    }
 
     const nodeIdToNodeMap = new Map(treeData.nodeIdToNodeMap);
 
@@ -148,6 +163,8 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
           nodeIdToChildNodeIdsMap
         }
     );
+
+    return childNodes;
   }
 
   const onNodeSelect = (event, nodeId) => {
@@ -236,15 +253,18 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
   return (
     !areRootChildrenLoaded?
       (
-        <div style={{
-          position: 'relative',
-          display:'flex',
-          width:"100%",
-          justifyContent: 'center'
+        (errors.length === 0)?
+          <div style={{
+            position: 'relative',
+            display:'flex',
+            width:"100%",
+            justifyContent: 'center'
 
-          }}>
-          <CircularProgress />
-        </div>
+            }}>
+            <CircularProgress />
+          </div>
+          :
+          <div/>
       )
     :
       (
