@@ -1,12 +1,14 @@
 /*global chrome*/
 
-import React from "react";
+import React, {useState} from "react";
 
 import LazyTreeView from './LazyTreeView';
 import DocumentIcon from '@material-ui/icons/Description';
 import FolderIcon from '@material-ui/icons/Folder';
 
-const GoogleDriveTreeControl = ({open, onSelectionChanged, allowFolderSelection=false, fileMimeTypes=[]}) => {
+const GoogleDriveTreeControl = ({open, onSelectionChanged, allowFolderSelection=false, fileMimeTypes=[], onErrors}) => {
+
+  const [errors, setErrors] = useState([]);
 
   console.log(`GoogleDriveTreeControl: fileMimeTypes: ${JSON.stringify(fileMimeTypes)} allowFolderSelection: ${allowFolderSelection}`); 
 
@@ -32,7 +34,19 @@ const GoogleDriveTreeControl = ({open, onSelectionChanged, allowFolderSelection=
     );
   }
 
-  return (<LazyTreeView open onSelectionChanged={onSelectionChanged} loadChildNodes={loadFolderChildNodes} allowParentNodeSelection={allowFolderSelection}/>);
+  const handleErrors = (errors) => {
+    console.log(`GoogleDriveTreeControl: errors: ${JSON.stringify(errors)}}`);
+    setErrors(errors);
+    onErrors(errors)
+  }
+
+  return (
+    (errors.length !=0)?
+      <div/>
+    :
+      <LazyTreeView open onSelectionChanged={onSelectionChanged} loadChildNodes={loadFolderChildNodes} allowParentNodeSelection={allowFolderSelection} onErrors={handleErrors} />
+
+  );
 
 }
 

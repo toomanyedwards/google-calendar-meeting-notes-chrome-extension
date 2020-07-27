@@ -89,7 +89,7 @@ const LazyTreeItem = (props) => {
 /**
  * Tree view that lazily loads child nodes as parent nodes are expanded
  */
-const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNodeSelection=false}) => {
+const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNodeSelection=false, onErrors}) => {
   const ROOT_NODE_ID="LazyTreeView_root";
     /*
         treeData consists of two Maps:  
@@ -123,6 +123,11 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
     },[]
   );
 
+  const handleErrors = (errors) => {
+    setErrors(errors);
+    onErrors(errors);
+  }
+
   const addNodeChildren = async (parentNodeId) => {
     
     var childNodes;
@@ -132,7 +137,7 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
     }
     catch(errors) {
       console.log(`LazyTreeView: addNodeChildren: Errors: ${JSON.stringify(errors)}`);
-      setErrors(errors);
+      handleErrors(errors);
       return;
     }
 

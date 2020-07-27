@@ -7,12 +7,15 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import ErrorsDialog from './ErrorsDialog.js'
+
 
 import GoogleDriveTreeControl from './GoogleDriveTreeControl'
 
   
 const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, title, allowFolderSelection=false, fileMimeTypes=[]}) => {  
   const [selectionInfo, setSelectionInfo] = React.useState(null);
+  const [errors, setErrors] = React.useState([]);
  
   const handleCancel = () => {
       setOpen(false);
@@ -33,26 +36,41 @@ const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, t
     setSelectionInfo(selectionInfo);
   }
   
-  return (
-    <Dialog maxWidth="lg" open={open}  aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">{title}</DialogTitle>
+  const handleErrors = (errors) => {
+    console.log(`SelectGoogleDriveResourceDialog: errors:`);  
+    setErrors([{message:"Error reading drive"}]);
+  }
 
-      <DialogContent>
-        <GoogleDriveTreeControl
-          id="1" 
-          name="Applications" 
-          open={open} 
-          onSelectionChanged={onSelectionChanged} 
-          allowFolderSelection={allowFolderSelection} 
-          fileMimeTypes={fileMimeTypes}
-        />
-      </DialogContent>
-  
-      <DialogActions>
-        <Button onClick={handleCancel} color="primary">Cancel</Button>
-        <Button onClick={handleSelectionConfirmed} disabled={!!!selectionInfo} color="primary">Select</Button>
-      </DialogActions>
-    </Dialog>
+  const handleErrorsDialogClose = () => {
+    setOpen(false);
+    setErrors([]);
+  }
+
+  return (
+    <div>
+      <ErrorsDialog open={errors.length != 0} title="Error Selecting From Google Drive" errors={errors} onClose={handleErrorsDialogClose}/>
+
+      <Dialog maxWidth="lg" open={open}  aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">{title}</DialogTitle>
+
+        <DialogContent>
+          <GoogleDriveTreeControl
+            id="1" 
+            name="Applications" 
+            open={open} 
+            onSelectionChanged={onSelectionChanged} 
+            allowFolderSelection={allowFolderSelection} 
+            fileMimeTypes={fileMimeTypes}
+            onErrors={handleErrors}
+          />
+        </DialogContent>
+    
+        <DialogActions>
+          <Button onClick={handleCancel} color="primary">Cancel</Button>
+          <Button onClick={handleSelectionConfirmed} disabled={!!!selectionInfo} color="primary">Select</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 }
 

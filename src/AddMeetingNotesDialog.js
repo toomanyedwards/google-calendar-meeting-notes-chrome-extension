@@ -11,75 +11,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import ListItem from '@material-ui/core/ListItem';
-import { Tree, minimalTheme } from 'react-lazy-paginated-tree';
-import { makeStyles } from '@material-ui/core/styles';
 import SelectGoogleDriveResourceDialog from './SelectGoogleDriveResourceDialog';
 import TextField from '@material-ui/core/TextField';
 
-const useStyles = makeStyles({
-    root: {
-      '& p': {
-        margin: 0,
-      },
-    },
-  });
-
-const MyListItem = (props) => {
-    const classes = useStyles();
-
-    return (
-        <ListItem className={classes.root} dense={true} {...props}/>
-    );
-  
-}
-
-// minimalTheme.listItemStyle.padding="0 0px";
-
-console.log(`minimalTheme: ${JSON.stringify(minimalTheme)}`);
-
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-const lazySample = [
-    {
-      id: 1,
-      name: '2017',
-      description: 'Last Year',
-      children: [],
-      page: 0,
-      numChildren: 5,
-      expanded: false,
-      selected: false,
-    },
-    {
-      id: 5,
-      name: '2018',
-      description: 'Current Year',
-      children: [],
-      page: 0,
-      numChildren: 5,
-      expanded: false,
-      selected: false,
-    },
-  ]
-
-const loadChildrenPaginated = async (node, pageLimit = 5) => {
-    await sleep(500);
-    const children = [];
-    for (let i = 0; i < pageLimit; i += 1) {
-      children.push({
-        id: i * node.page,
-        name: `${node.name}${i + (node.page - 1) * pageLimit}`,
-        description: '',
-        children: [],
-        numChildren: pageLimit * 3,
-        page: 0,
-        expanded: false,
-        selected: false,
-      });
-    }
-    return children;
-  };
 
 const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => {  
     const [isSelectNotesTemplateDialogOpen, setSelectNotesTemplateDialogOpen] = React.useState(false);

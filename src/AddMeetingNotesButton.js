@@ -74,7 +74,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
           {
             type: "addNotes",
             meetingNotesTitle: meetingTitle + " Notes",
-            meetingNotesTemplate: notesTemplateInfo,
+            meetingNotesTemplateFoo: notesTemplateInfo,
             meetingNotesFolder: notesDestinationInfo,
 
             // google
@@ -143,27 +143,11 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
         class={className}>Add Meeting Notes
       </button>
       <AddingMeetingNotesDialog open={addingMeetingNotes}/>
-      <ErrorsDialog open={isErrorsDialogOpen} handleClose={handleErrorsDialogClose} errors={errors}/>
+      <ErrorsDialog title={"Error creating meeting notes"} open={isErrorsDialogOpen} onClose={handleErrorsDialogClose} errors={errors}/>
       <AddMeetingNotesDialog userDomain={userDomain} open={isAddMeetingNotesDialogOpen} setOpen={setAddMeetingNotesDialogOpen} addMeetingNotes={handleAddMeetingNotes}/>
     </div>
   )
 };
-
-const getChromeUserToken = () => 
-  new Promise(
-    (resolve) => {
-      chrome.identity.getAuthToken(
-        {interactive: true},
-        (token) => {
-          console.log(`Chrome user token is: ${token}`)
-          resolve(token)
-        }
-      )
-    }
-  );
-
-
-
 
 
 const getAddDescriptionDiv = () => {
