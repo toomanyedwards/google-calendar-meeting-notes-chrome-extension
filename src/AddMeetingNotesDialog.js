@@ -15,7 +15,7 @@ import SelectGoogleDriveResourceDialog from './SelectGoogleDriveResourceDialog';
 import TextField from '@material-ui/core/TextField';
 
 
-const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, open, setOpen, addMeetingNotes}) => {  
+const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTemplateInfo, defaultNotesDestinationInfo, open, setOpen, addMeetingNotes}) => {  
     const [isSelectNotesTemplateDialogOpen, setSelectNotesTemplateDialogOpen] = useState(false);
     const [isSelectNotesDestinationDialogOpen, setSelectNotesDestinationDialogOpen] = useState(false);
     const [sharingLevel, setSharingLevel] = useState("");
@@ -31,6 +31,20 @@ const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, open, setOpen, 
             setSharingLevel(defaultSharingLevel);
         }, 
         [defaultSharingLevel]
+    );
+
+    useEffect(
+        () => {
+            setNotesTemplateInfo(defaultNotesTemplateInfo);
+        }, 
+        [defaultNotesTemplateInfo]
+    );
+
+    useEffect(
+        () => {
+            setNotesDestinationInfo(defaultNotesDestinationInfo);
+        }, 
+        [defaultNotesDestinationInfo]
     );
 
     const handleCancel = () => {

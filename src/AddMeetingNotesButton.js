@@ -133,6 +133,8 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
       <ErrorsDialog title={"Error creating meeting notes"} open={isErrorsDialogOpen} onClose={handleErrorsDialogClose} errors={errors}/>
       <AddMeetingNotesDialog 
         defaultSharingLevel={config.sharing?config.sharing.sharingLevel:""} 
+        defaultNotesTemplateInfo={config.notesTemplateInfo}
+        defaultNotesDestinationInfo={config.notesDestinationInfo}
         userDomain={userDomain} 
         open={isAddMeetingNotesDialogOpen} 
         setOpen={setAddMeetingNotesDialogOpen} 
