@@ -1,5 +1,5 @@
 /*global chrome*/
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled, {css} from 'styled-components'
 import AddMeetingNotesDialog from './AddMeetingNotesDialog.js'
 import AddingMeetingNotesDialog from './AddingMeetingNotesDialog.js'
@@ -12,44 +12,35 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
   const [errors, setErrors] = React.useState([]);
   const [isErrorsDialogOpen, setErrorsDialogOpen] = React.useState(false);
   const [addingMeetingNotes, setAddingMeetingNotes] = React.useState(false);
+  const [config, setConfig] = React.useState({});
 
-  const setDefaultMeetingNotesConfig = ({notesTemplateId, noteTemplateName, meetingNotesFolderId, meetingNotesFolderName, sharing}) => {
-    new Promise(
-     (resolve) => {
-       chrome.storage.sync.set(
-        {notesTemplateId, noteTemplateName, meetingNotesFolderId, meetingNotesFolderName, sharing}, 
-         (response) => {
-           console.log(`Data set: ${JSON.stringify(response)}`);
-         }
-       )  
-     }
-   );
-  }
-
-
-  const getDefaultMeetingNotesConfig = () => {
-     return new Promise(
-      resolve => {
-        chrome.storage.sync.get(
-          null,
-          response => {
-            console.log(`Data get: ${JSON.stringify(response)}`);
-            resolve(response);
-          }
-        );
+  useEffect(
+    () => {
+      const initializeDefaults = async() => {
+        const defaultConfig = await getChromeStorageSyncData();
+        if(!defaultConfig.sharing) {
+        //if(true) {
+          setConfig(
+            {
+              sharing: {
+                sharingLevel:"private",
+                userDomain: userDomain
+              }
+            }
+          );
+        } else {
+          setConfig(
+            defaultConfig
+          );
+        }
       }
-     )
-  }
-  
-  const test = async () => {
-    await setDefaultMeetingNotesConfig({notesTemplateId:"someNotesTemplateId", noteTemplateName:"someName"});
-    await getDefaultMeetingNotesConfig();
-  }
-  
-
+      initializeDefaults();
+    },[]
+  );
+      
   const openAddMeetingNotesDialog = async () => {
     console.log("openAddMeetingNotesDialog 1");
-
+/*
     var data; 
     await clearChromeStorageSyncData();
     data = await getChromeStorageSyncData(null);
@@ -62,7 +53,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
     console.log(`removed buzz: ${JSON.stringify(data)}`);
 
     console.log(`openAddMeetingNotesDialog 1.5: ${JSON.stringify(data)}`);
-    console.log("openAddMeetingNotesDialog 2");
+    console.log("openAddMeetingNotesDialog 2");*/
     setAddMeetingNotesDialogOpen(true);
   };
 
@@ -102,14 +93,17 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
 
 
 
-  const handleAddMeetingNotes = async (meetingNotesFileSharing) => {
+  const handleAddMeetingNotes = async (meetingNotesConfig) => {
     console.log(`handleAddMeetingNotes 1`);
     setAddMeetingNotesDialogOpen(false);
     console.log(`handleAddMeetingNotes 2`);
     setAddingMeetingNotes(true);
     console.log(`handleAddMeetingNotes 3`);
     try{
-      await addMeetingNotes(meetingNotesFileSharing);
+      await addMeetingNotes(meetingNotesConfig);
+      // If successful, set the config as the new default
+      setChromeStorageSyncData(meetingNotesConfig);
+
     }catch(errors){
       setErrors(errors);
       console.log(`handleAddMeetingNotes errors: ${JSON.stringify(errors)}`);
@@ -122,13 +116,6 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
     finally{
       setAddingMeetingNotes(false);
     }
-  }
-
-  const addMeetingtNotes = async () => {
-    
-    await addMeetingNotes(meetingDescriptionEl, getMeetingTitle());
-    
-
   }
 
   const handleErrorsDialogClose = () => {
@@ -144,7 +131,13 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
       </button>
       <AddingMeetingNotesDialog open={addingMeetingNotes}/>
       <ErrorsDialog title={"Error creating meeting notes"} open={isErrorsDialogOpen} onClose={handleErrorsDialogClose} errors={errors}/>
-      <AddMeetingNotesDialog userDomain={userDomain} open={isAddMeetingNotesDialogOpen} setOpen={setAddMeetingNotesDialogOpen} addMeetingNotes={handleAddMeetingNotes}/>
+      <AddMeetingNotesDialog 
+        defaultSharingLevel={config.sharing?config.sharing.sharingLevel:""} 
+        userDomain={userDomain} 
+        open={isAddMeetingNotesDialogOpen} 
+        setOpen={setAddMeetingNotesDialogOpen} 
+        addMeetingNotes={handleAddMeetingNotes}
+      />
     </div>
   )
 };

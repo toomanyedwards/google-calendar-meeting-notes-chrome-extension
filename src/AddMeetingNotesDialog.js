@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -15,10 +15,10 @@ import SelectGoogleDriveResourceDialog from './SelectGoogleDriveResourceDialog';
 import TextField from '@material-ui/core/TextField';
 
 
-const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => {  
-    const [isSelectNotesTemplateDialogOpen, setSelectNotesTemplateDialogOpen] = React.useState(false);
-    const [isSelectNotesDestinationDialogOpen, setSelectNotesDestinationDialogOpen] = React.useState(false);
-    const [sharingLevel, setSharingLevel] = React.useState('private');
+const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, open, setOpen, addMeetingNotes}) => {  
+    const [isSelectNotesTemplateDialogOpen, setSelectNotesTemplateDialogOpen] = useState(false);
+    const [isSelectNotesDestinationDialogOpen, setSelectNotesDestinationDialogOpen] = useState(false);
+    const [sharingLevel, setSharingLevel] = useState("");
     const [notesTemplateInfo, setNotesTemplateInfo] = useState(null);
     const [notesDestinationInfo, setNotesDestinationInfo] = useState(null);
       
@@ -26,6 +26,12 @@ const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => 
         setSharingLevel(event.target.value);
     };
 
+    useEffect(
+        () => {
+            setSharingLevel(defaultSharingLevel);
+        }, 
+        [defaultSharingLevel]
+    );
 
     const handleCancel = () => {
         setOpen(false);
@@ -80,7 +86,7 @@ const AddMeetingNotesDialog = ({userDomain, open, setOpen, addMeetingNotes}) => 
             />
             <Dialog  open={open}  aria-labelledby="form-dialog-title" fullWidth={true}
 maxWidth = {'xs'}>
-                <DialogTitle id="form-dialog-title">Add Meeting Notes</DialogTitle>
+                <DialogTitle id="form-dialog-title">Add Meeting Notes{defaultSharingLevel}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Notes Template:
