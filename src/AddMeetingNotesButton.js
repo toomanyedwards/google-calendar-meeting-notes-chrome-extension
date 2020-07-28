@@ -74,7 +74,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
           {
             type: "addNotes",
             meetingNotesTitle: meetingTitle + " Notes",
-            meetingNotesTemplateFoo: notesTemplateInfo,
+            meetingNotesTemplate: notesTemplateInfo,
             meetingNotesFolder: notesDestinationInfo,
 
             // google
@@ -90,7 +90,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
                   addNotesDocToMeetingDescription(meetingDescriptionEl, response.meetingNotesDocUrl)
               } else {
                 const errors = response.errors;
-                console.log(`addMeetingNotes errors: ${errors}`);
+                console.log(`addMeetingNotes errors: ${JSON.stringify(errors)}`);
                 reject(errors);
               }
               resolve(response);

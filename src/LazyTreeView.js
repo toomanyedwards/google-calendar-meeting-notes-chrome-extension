@@ -109,10 +109,7 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
         if(open && !areRootChildrenLoaded) {
           if( await addNodeChildren(ROOT_NODE_ID)) {
             setRootChildrenLoaded(true);
-            console.log(`Children loaded`);
-          } else{
-            console.log(`Children not loaded`);
-          }
+          } 
         } else if (!open) {
           // Invalidate the nodes when the component is hidden
           // Perhaps optimize and support explicit refresh later
@@ -145,7 +142,6 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
 
     if(parentNodeId != ROOT_NODE_ID) {
       const parentNode = nodeIdToNodeMap.get(parentNodeId);
-      console.log(`Adding children to ${parentNode.name}`)
       parentNode.childrenLoaded = true;
       nodeIdToNodeMap.set(parentNodeId, parentNode);
     }
@@ -175,7 +171,6 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
   const onNodeSelect = (event, nodeId) => {
     const node = treeData.nodeIdToNodeMap.get(nodeId);
     
-    console.log(`onNodeSelect: allowParentNodeSelection:${allowParentNodeSelection}`);
     // Prevent clicking the expander icon from triggering a selecion
     if (allowParentNodeSelection && event.target.closest('.MuiTreeItem-iconContainer')) {
         return;
@@ -189,11 +184,9 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
 
     // Toggle selection of the node
     if (selected === nodeId) {
-        console.log(`Deselected: ${node.name}`);
         setSelected("");
         onSelectionChanged(null);
     } else {
-        console.log(`Selected: ${node.name}`);
         setSelected(nodeId);
         onSelectionChanged(node);
     }
@@ -230,17 +223,12 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
   }
 
   const onNodeToggle = (event, nodeIds) => {
-    console.log(`onNodeToggle: ${JSON.stringify(nodeIds)} allowParentNodeSelection: ${allowParentNodeSelection}`);
-
     // If we allow parent node selection, don't toggle if the node label was the source of the toggle.
     // The expander icon only must be used in that situation since we don't want clicking
     // on the node label to trigger both a toggle and selection.
     if (allowParentNodeSelection && !event.target.closest('.MuiTreeItem-iconContainer')) {
       return;
     }
-
-    console.log(`onNodeToggle: toggling`);
-
     // Get the ids of the newly expanded nodes
     const expandingNodes = nodeIds.filter(x => !expanded.includes(x));
     setExpanded(nodeIds);

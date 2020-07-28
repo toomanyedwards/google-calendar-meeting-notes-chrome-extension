@@ -121,7 +121,7 @@ const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplate, mee
       } else if (notFoundId === meetingNotesFolder.id) {
         // Set the mesage to an application level message
         errors[0].originalMessage = errors[0].message;
-        errors[0].message = `Could not find the notes folder: ${meetingNotesFolder.name}.`;
+        errors[0].message = `Could not find the notes destination folder: ${meetingNotesFolder.name}.`;
       }
     }
 
