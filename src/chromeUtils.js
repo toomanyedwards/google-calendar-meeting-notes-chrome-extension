@@ -10,7 +10,7 @@ export const getChromeStorageSyncData = (keys) => {
             chrome.storage.sync.get(
                 keys,
                 response => {
-                    console.log(`Data get: ${JSON.stringify(response)}`);
+                    console.log(`getChromeStorageSyncData get: ${JSON.stringify(response)}`);
                     resolve(response);
                 }
             );
