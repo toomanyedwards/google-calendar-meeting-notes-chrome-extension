@@ -98,9 +98,8 @@ const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTem
                 title="Select a Notes Destination Folder"
                 allowFolderSelection={true}
             />
-            <Dialog  open={open}  aria-labelledby="form-dialog-title" fullWidth={true}
-maxWidth = {'xs'}>
-                <DialogTitle id="form-dialog-title">Add Meeting Notes{defaultSharingLevel}</DialogTitle>
+            <Dialog  open={open}  aria-labelledby="form-dialog-title" fullWidth={true} maxWidth = {'xs'}>
+                <DialogTitle id="form-dialog-title">Add Meeting Notes</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Notes Template:

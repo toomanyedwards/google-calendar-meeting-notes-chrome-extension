@@ -6,19 +6,14 @@ import LazyTreeView from './LazyTreeView';
 import DocumentIcon from '@material-ui/icons/Description';
 import FolderIcon from '@material-ui/icons/Folder';
 
-const GoogleDriveTreeControl = ({open, onSelectionChanged, allowFolderSelection=false, fileMimeTypes=[], onErrors}) => {
+const GoogleDriveTreeControl = ({onSelectionChanged, allowFolderSelection=false, fileMimeTypes=[], onErrors}) => {
 
   const [errors, setErrors] = useState([]);
-
-  console.log(`GoogleDriveTreeControl: fileMimeTypes: ${JSON.stringify(fileMimeTypes)} allowFolderSelection: ${allowFolderSelection}`); 
 
   const GOOGLE_DRIVE_FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
   const mimeTypes = [GOOGLE_DRIVE_FOLDER_MIME_TYPE].concat(fileMimeTypes);
   
   const loadFolderChildNodes = async  (folderId="root") => {
-    
-    console.log(`loadFolderChildNodes`);
-
     const folderListing = await listGoogleDrive(folderId, mimeTypes);
     
     return folderListing.map(
@@ -73,9 +68,7 @@ const listGoogleDrive = (folderId="root", mimeTypes) => {
             fields: "nextPageToken, files(id, name, mimeType)"
           }
         }, 
-        response => {
-            console.log(`listGoogleDrive response: ${JSON.stringify(response)}`);
-            
+        response => {           
             if(response.filesList) {
               resolve(response.filesList);
             } else {
