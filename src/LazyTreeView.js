@@ -89,31 +89,49 @@ const LazyTreeItem = (props) => {
 /**
  * Tree view that lazily loads child nodes as parent nodes are expanded
  */
-const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNodeSelection=false, onErrors}) => {
+const LazyTreeView = ({loadChildNodes, onSelectionChanged, allowParentNodeSelection=false, onErrors}) => {
   const ROOT_NODE_ID="LazyTreeView_root";
-    /*
-        treeData consists of two Maps:  
-    */
-  const [treeData, setTreeData] = useState({});
+     
+  const [treeData, setTreeData] = useState(
+    {
+      nodeIdToNodeMap: new Map().set(
+        ROOT_NODE_ID, 
+        {
+          id: ROOT_NODE_ID,
+          name: ROOT_NODE_ID,
+          mayHaveChildren: true
+        }
+      )
+    }
+  );
   // Array of ids of the expanded tree nodes
   const [expanded, setExpanded] = React.useState([]);
   // id of the selected node (if any)
   const [selected, setSelected] = React.useState("");
   const [errors, setErrors] = useState([]);
-   // True, if the root children are loaded
-  const [areRootChildrenLoaded, setRootChildrenLoaded] = useState(false);
+   
+  
+  const getNode = (nodeId) => {
+    return treeData.nodeIdToNodeMap.get(nodeId);
+  }
+
+  const getChildNodeIds = (nodeId) => {
+    return treeData.nodeIdToChildNodeIdsMap.get(nodeId);
+  } 
+
+  const getRootNode = () => {
+    return getNode(ROOT_NODE_ID);
+  }
+
+  const isTreeInitialized = () => {
+    return getRootNode().childrenLoaded;
+  }
 
   useEffect(
     () => {
       async function loadRootChildren() {
-        if(open && !areRootChildrenLoaded) {
-          if( await addNodeChildren(ROOT_NODE_ID)) {
-            setRootChildrenLoaded(true);
-          } 
-        } else if (!open) {
-          // Invalidate the nodes when the component is hidden
-          // Perhaps optimize and support explicit refresh later
-          setRootChildrenLoaded(false);
+        if(!isTreeInitialized()) {
+          await addNodeChildren(ROOT_NODE_ID)
         }
       }
       loadRootChildren();
@@ -138,13 +156,11 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
       return;
     }
 
-    const nodeIdToNodeMap = new Map(treeData.nodeIdToNodeMap);
+    const parentNode = getNode(parentNodeId);
+    parentNode.childrenLoaded = true;
 
-    if(parentNodeId != ROOT_NODE_ID) {
-      const parentNode = nodeIdToNodeMap.get(parentNodeId);
-      parentNode.childrenLoaded = true;
-      nodeIdToNodeMap.set(parentNodeId, parentNode);
-    }
+    const nodeIdToNodeMap = new Map(treeData.nodeIdToNodeMap);
+    nodeIdToNodeMap.set(parentNodeId, parentNode);
 
     const childNodeIds = [];
     childNodes.map( 
@@ -169,7 +185,7 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
   }
 
   const onNodeSelect = (event, nodeId) => {
-    const node = treeData.nodeIdToNodeMap.get(nodeId);
+    const node = getNode(nodeId);
     
     // Prevent clicking the expander icon from triggering a selecion
     if (allowParentNodeSelection && event.target.closest('.MuiTreeItem-iconContainer')) {
@@ -194,31 +210,31 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
 
   const renderTreeItems = (nodeId) => {
    
-    if(!areRootChildrenLoaded) {
+    if(!isTreeInitialized()) {
       return null;
     }
-    const childNodeIds = treeData.nodeIdToChildNodeIdsMap.get(nodeId);
-    if(nodeId === ROOT_NODE_ID) {
-      if(Array.isArray(childNodeIds)) {
-        return childNodeIds.map((childNodeId) => renderTreeItems(childNodeId));
-      }
-      else {
-        return null;
-      }
-    } 
-    else {
-      const node = treeData.nodeIdToNodeMap.get(nodeId);    
 
-      if(node.mayHaveChildren && !node.childrenLoaded) {
-        return (<LazyTreeItem labelIcon={node.icon}  key={nodeId} nodeId={nodeId} labelText={node.name}><div>Loading...</div></LazyTreeItem>)
+    const node = getNode(nodeId);
+
+    var children;
+    if (node.mayHaveChildren) {
+      if(node.childrenLoaded) {
+        const childNodeIds = getChildNodeIds(nodeId);
+        children = Array.isArray(childNodeIds) ? childNodeIds.map((childNodeId) => renderTreeItems(childNodeId)) : null;
       }
       else {
-        return (
-            <LazyTreeItem labelIcon={node.icon} key={nodeId} nodeId={nodeId} labelText={node.name}>
-              {Array.isArray(childNodeIds) ? childNodeIds.map((childNodeId) => renderTreeItems(childNodeId)) : null}
-            </LazyTreeItem>
-        );
+        children = <div>Loading...</div>
       }
+    }
+
+   if(nodeId === ROOT_NODE_ID) {
+      return children;
+    } else {
+      return (
+        <LazyTreeItem labelIcon={node.icon} key={nodeId} nodeId={nodeId} labelText={node.name}>
+          {children}
+        </LazyTreeItem>
+      );
     }    
   }
 
@@ -235,7 +251,7 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
 
     if (expandingNodes[0]) {
       const nodeId = expandingNodes[0];
-      const node = treeData.nodeIdToNodeMap.get(nodeId);
+      const node = getNode(nodeId);
 
       if(!node.childrenLoaded) {
         addNodeChildren(nodeId);
@@ -244,7 +260,7 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
   }
 
   return (
-    !areRootChildrenLoaded?
+    !isTreeInitialized()?
       (
         (errors.length === 0)?
           <div style={{
@@ -252,7 +268,6 @@ const LazyTreeView = ({open, loadChildNodes, onSelectionChanged, allowParentNode
             display:'flex',
             width:"100%",
             justifyContent: 'center'
-
             }}>
             <CircularProgress />
           </div>
