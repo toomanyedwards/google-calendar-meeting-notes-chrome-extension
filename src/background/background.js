@@ -121,7 +121,7 @@ const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplate, mee
       } else if (notFoundId === meetingNotesFolder.id) {
         // Set the mesage to an application level message
         errors[0].originalMessage = errors[0].message;
-        errors[0].message = `Could not find the notes folder: ${meetingNotesFolder.name}.`;
+        errors[0].message = `Could not find the notes destination folder: ${meetingNotesFolder.name}.`;
       }
     }
 
@@ -182,13 +182,14 @@ const setGoogleDriveFileSharingPrivate = async (fileId) => {
         }
       )
     );  
+    console.log(`setGoogleDriveFileSharingPrivate success!`);
   }catch(sharingErrors) {
     const errors = sharingErrors.result.error.errors;
     console.log(`setGoogleDriveFileSharingPrivate errors: ${JSON.stringify(errors)}`);
     try{
       await deleteGoogleDriveFile(fileId);
     }
-    catch(deletegErrors) {
+    catch(deleteErrors) {
       errors.push(deleteErrors.result.error.errors);
     }
     throw errors
@@ -299,11 +300,13 @@ chrome.extension.onMessage.addListener(
         handleAddNotesButtonClicked(message).
           then( 
             (fileId)=>{
+              console.log(`handleAddNotesButtonClicked 1: ${fileId}`);
               sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
+              console.log(`handleAddNotesButtonClicked 2`);
             }
           ).catch(
             (errors) => {
-              console.log(`handleAddNotesButtonClicked errors: ${JSON.stringify(errors)}`);
+              console.log(`handleAddNotesButtonClicked 2 errors: ${JSON.stringify(errors)}`);
               sendResponse({errors});
             }
           );
@@ -329,6 +332,10 @@ chrome.extension.onMessage.addListener(
 
   }
 );
+
+const getGoogleDocUrlForId = (googleFileId) => {
+  return `https://docs.google.com/document/d/${googleFileId}/edit?usp=sharing`
+}
 
 const listGoogleDrive = async (listParams) => {
   

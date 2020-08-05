@@ -1,5 +1,5 @@
 /*global chrome*/
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled, {css} from 'styled-components'
 import AddMeetingNotesDialog from './AddMeetingNotesDialog.js'
 import AddingMeetingNotesDialog from './AddingMeetingNotesDialog.js'
@@ -12,44 +12,35 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
   const [errors, setErrors] = React.useState([]);
   const [isErrorsDialogOpen, setErrorsDialogOpen] = React.useState(false);
   const [addingMeetingNotes, setAddingMeetingNotes] = React.useState(false);
+  const [config, setConfig] = React.useState({});
 
-  const setDefaultMeetingNotesConfig = ({notesTemplateId, noteTemplateName, meetingNotesFolderId, meetingNotesFolderName, sharing}) => {
-    new Promise(
-     (resolve) => {
-       chrome.storage.sync.set(
-        {notesTemplateId, noteTemplateName, meetingNotesFolderId, meetingNotesFolderName, sharing}, 
-         (response) => {
-           console.log(`Data set: ${JSON.stringify(response)}`);
-         }
-       )  
-     }
-   );
-  }
-
-
-  const getDefaultMeetingNotesConfig = () => {
-     return new Promise(
-      resolve => {
-        chrome.storage.sync.get(
-          null,
-          response => {
-            console.log(`Data get: ${JSON.stringify(response)}`);
-            resolve(response);
-          }
-        );
+  useEffect(
+    () => {
+      const initializeDefaults = async() => {
+        const defaultConfig = await getChromeStorageSyncData();
+        if(!defaultConfig.sharing) {
+        //if(true) {
+          setConfig(
+            {
+              sharing: {
+                sharingLevel:"private",
+                userDomain: userDomain
+              }
+            }
+          );
+        } else {
+          setConfig(
+            defaultConfig
+          );
+        }
       }
-     )
-  }
-  
-  const test = async () => {
-    await setDefaultMeetingNotesConfig({notesTemplateId:"someNotesTemplateId", noteTemplateName:"someName"});
-    await getDefaultMeetingNotesConfig();
-  }
-  
-
+      initializeDefaults();
+    },[]
+  );
+      
   const openAddMeetingNotesDialog = async () => {
     console.log("openAddMeetingNotesDialog 1");
-
+/*
     var data; 
     await clearChromeStorageSyncData();
     data = await getChromeStorageSyncData(null);
@@ -62,11 +53,11 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
     console.log(`removed buzz: ${JSON.stringify(data)}`);
 
     console.log(`openAddMeetingNotesDialog 1.5: ${JSON.stringify(data)}`);
-    console.log("openAddMeetingNotesDialog 2");
+    console.log("openAddMeetingNotesDialog 2");*/
     setAddMeetingNotesDialogOpen(true);
   };
 
-  const addMeetingNotes = (meetingNotesSharing) => {
+  const addMeetingNotes = ({sharing, notesTemplateInfo, notesDestinationInfo}) => {
     const meetingTitle = getMeetingTitle();
     return new Promise(
       (resolve, reject) => {
@@ -74,14 +65,13 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
           {
             type: "addNotes",
             meetingNotesTitle: meetingTitle + " Notes",
-            // civitas
-            meetingNotesTemplate: {id:"1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI", name: "some meeting notes template"},
-            meetingNotesFolder: {id: "1gl7XMIbtTolHBdOfMcfMjZwnQFgoElbK", name: "some meeting notes folder name"},
+            meetingNotesTemplate: notesTemplateInfo,
+            meetingNotesFolder: notesDestinationInfo,
 
             // google
             //meetingNotesTemplateId: "1bAoZmcWXQnofin2esddfdTWB0Ko0MkNJBsQPpS9SZS4",
             //meetingNotesFolderId: " 1TNkioETxxx10b9Ikg0D0bZVbVSnW8XZt",
-            meetingNotesSharing
+            meetingNotesSharing:sharing
           }, 
           response => {
               console.log('addMeetingNotesButton clicked response', response);
@@ -91,7 +81,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
                   addNotesDocToMeetingDescription(meetingDescriptionEl, response.meetingNotesDocUrl)
               } else {
                 const errors = response.errors;
-                console.log(`addMeetingNotes errors: ${errors}`);
+                console.log(`addMeetingNotes errors: ${JSON.stringify(errors)}`);
                 reject(errors);
               }
               resolve(response);
@@ -103,14 +93,17 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
 
 
 
-  const handleAddMeetingNotes = async (meetingNotesFileSharing) => {
+  const handleAddMeetingNotes = async (meetingNotesConfig) => {
     console.log(`handleAddMeetingNotes 1`);
     setAddMeetingNotesDialogOpen(false);
     console.log(`handleAddMeetingNotes 2`);
     setAddingMeetingNotes(true);
     console.log(`handleAddMeetingNotes 3`);
     try{
-      await addMeetingNotes(meetingNotesFileSharing);
+      await addMeetingNotes(meetingNotesConfig);
+      // If successful, set the config as the new default
+      setChromeStorageSyncData(meetingNotesConfig);
+
     }catch(errors){
       setErrors(errors);
       console.log(`handleAddMeetingNotes errors: ${JSON.stringify(errors)}`);
@@ -125,13 +118,6 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
     }
   }
 
-  const addMeetingtNotes = async () => {
-    
-    await addMeetingNotes(meetingDescriptionEl, getMeetingTitle());
-    
-
-  }
-
   const handleErrorsDialogClose = () => {
     setErrorsDialogOpen(false);
   }
@@ -144,27 +130,19 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
         class={className}>Add Meeting Notes
       </button>
       <AddingMeetingNotesDialog open={addingMeetingNotes}/>
-      <ErrorsDialog open={isErrorsDialogOpen} handleClose={handleErrorsDialogClose} errors={errors}/>
-      <AddMeetingNotesDialog userDomain={userDomain} open={isAddMeetingNotesDialogOpen} setOpen={setAddMeetingNotesDialogOpen} addMeetingNotes={handleAddMeetingNotes}/>
+      <ErrorsDialog title={"Error creating meeting notes"} open={isErrorsDialogOpen} onClose={handleErrorsDialogClose} errors={errors}/>
+      <AddMeetingNotesDialog 
+        defaultSharingLevel={config.sharing?config.sharing.sharingLevel:""} 
+        defaultNotesTemplateInfo={config.notesTemplateInfo}
+        defaultNotesDestinationInfo={config.notesDestinationInfo}
+        userDomain={userDomain} 
+        open={isAddMeetingNotesDialogOpen} 
+        setOpen={setAddMeetingNotesDialogOpen} 
+        addMeetingNotes={handleAddMeetingNotes}
+      />
     </div>
   )
 };
-
-const getChromeUserToken = () => 
-  new Promise(
-    (resolve) => {
-      chrome.identity.getAuthToken(
-        {interactive: true},
-        (token) => {
-          console.log(`Chrome user token is: ${token}`)
-          resolve(token)
-        }
-      )
-    }
-  );
-
-
-
 
 
 const getAddDescriptionDiv = () => {
