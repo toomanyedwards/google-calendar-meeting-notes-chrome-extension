@@ -71,3 +71,8 @@ https://github.com/ctrobins/headline-fetcher
 https://noidea.dog/blog/chrome-identity-api
 
 https://noidea.dog/blog/chrome-identity-api-part-2
+
+
+https://www.npmjs.com/package/react-google-login
+
+https://bumbu.me/gapi-in-chrome-extension

@@ -72,6 +72,7 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
       (resolve, reject) => {
         chrome.runtime.sendMessage(
           {
+            type: "addNotes",
             meetingNotesTitle: meetingTitle + " Notes",
             // civitas
             meetingNotesTemplate: {id:"1WX8GXmSmq1lWJ992jZ4Wwsg8oiZL9-YwxOc_2iQ8eOI", name: "some meeting notes template"},

@@ -23,7 +23,7 @@ onGAPILoad = async () => {
 
   await setGapiToken();
   
-  listFiles();
+  //listFiles();
   
 }
 
@@ -290,44 +290,71 @@ const setGoogleDriveFilePermissions = async (fileId, permissions) => {
  * Listen for messages from content script
  */
 chrome.extension.onMessage.addListener(
-  (request, sender, sendResponse) => {
-    console.log(`Message received: ${JSON.stringify(request)}`);
+  (message, sender, sendResponse) => {
+    console.log(`Message received: ${JSON.stringify(message)}`);
      // setGapiToken();
   
-    
-    handleAddNotesButtonClicked(request).
-      then( 
-        (fileId)=>{
-          sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
-        }
-      ).catch(
-        (errors) => {
-          console.log(`handleAddNotesButtonClicked errors: ${JSON.stringify(errors)}`);
-          sendResponse({errors});
-        }
-      );
+    switch(message.type) {
+      case "addNotes":
+        handleAddNotesButtonClicked(message).
+          then( 
+            (fileId)=>{
+              sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
+            }
+          ).catch(
+            (errors) => {
+              console.log(`handleAddNotesButtonClicked errors: ${JSON.stringify(errors)}`);
+              sendResponse({errors});
+            }
+          );
+  
+        break;
+      case "listGoogleDrive":
+        listGoogleDrive(message.listParams). 
+            then(
+              (filesList) => {
+                console.log(`listGoogleDrive 1: ${filesList}`);
+                sendResponse({filesList});
+              }
+            ).catch(
+              (errors) => {
+                console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
+                sendResponse({errors});
+              } 
+            );
+
+    }
     
     return true;
 
   }
 );
 
-const getGoogleDocUrlForId = (googleFileId) => {
-  return `https://docs.google.com/document/d/${googleFileId}/edit?usp=sharing`
-}
+const listGoogleDrive = async (listParams) => {
+  
+    console.log(`listGoogleDrive: listingFiles`);
+    var filesList = [];
+    try{
+      do {
+        
+        const response = await gapi.client.drive.files.list(listParams);
+        console.log(`listGoogleDrive: Page: ${JSON.stringify(response)}`);
+        
+        listParams.pageToken = response.result.nextPageToken;
+        filesList = filesList.concat(response.result.files);
+      }while(listParams.pageToken)
+      
 
-const listFiles = async () => {
-  console.log("Listing files")
-  response = await gapi.client.drive.files.list(
-    {
-      'pageSize': 10,
-      'fields': "nextPageToken, files(id, name)"
-    }
-  );
+      console.log(`listGoogleDrive: ${JSON.stringify(filesList)}`);
 
-  response.result.files.forEach(
-    (file)  => {
-      console.log(`${file.name} (${file.id})`)
+      return filesList;
     }
-  ); 
-}
+    catch(e) {
+      const errors = e.result.error.errors;
+      console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
+      throw errors;
+    }
+    console.log(`listGoogleDrive: listingFiles`);
+   
+  }
+   
