@@ -1,0 +1,58 @@
+{
+  "name": "Google Calendar Meeting Notes",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "description": "Adds notes to Google Calendar meeting descriptions",
+  "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhPS8lUHHXbJkwS4Z7z2IEWa/KWOeYrS2Gb/BDtIz5p4shs1oYTzu81fM4pPrvWskS6RYTQAxAeNS5uHV2b6scQ4qjtqQp8P1ukhYqHdRiRGeug1IFAyeU1jeaW5lpg7Xa6+4ESbbhgtnVmty+Xv0hEVWUVqTrLLUjqprbfjlDRgQ5zlJzjKvaL1rk7tb+asjsI7tNiC2PAzzCGvCq1InU9knUByzx6cN0/ttT5lJKg4FeBxPubcOE5zCXloIV2cTv4hqyJuPNFFbZhSjuHZFCX8vO5IdyG30+CHDTBYLNrknRRPo1RdpJi4mE0DeHtV/MKxUNOuv0GZfn/wX+hrLEQIDAQAB",
+  "icons": {
+    "16": "google-doc-16.png",
+    "32": "google-doc-32.png",
+    "48": "google-doc-48.png",
+    "128": "google-doc-128.png"
+  },
+  "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
+  "oauth2": {
+    "client_id": "370393194814-avjjeu46inmjr38cku9312crolphgftt.apps.googleusercontent.com",
+    "scopes":[
+      "https://www.googleapis.com/auth/drive"
+    ]
+  },
+  "permissions": [
+    "identity",
+    "identity.email",
+    "activeTab",
+    "declarativeContent",
+    "storage",
+    "contextMenus",
+    "bookmarks",
+    "*://www.googleapis.com/*",
+    "*://accounts.google.com/*"
+  ],
+  "browser_action": {
+    "default_icon": {
+      "16": "google-doc-16.png",
+      "32": "google-doc-32.png",
+      "48": "google-doc-48.png",
+      "128": "google-doc-128.png"
+    },
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [ "https://www.google.com/calendar/*", "https://calendar.google.com/calendar/*"],
+      "run_at": "document_idle",
+      "js": [
+        "/static/js/2.chunk.js",
+        "/static/js/main.chunk.js",
+        "/static/js/runtime-main.js"
+      ]
+    }
+  ],
+  "background": {
+    "page": "background.html",
+    "persistent": false
+},
+  "web_accessible_resources": [
+    "*.png"
+  ]
+}
