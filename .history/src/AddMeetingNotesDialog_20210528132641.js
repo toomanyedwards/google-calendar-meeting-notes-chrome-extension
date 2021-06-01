@@ -103,23 +103,26 @@ const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTem
             <Dialog  open={open}  aria-labelledby="form-dialog-title" fullWidth={true} maxWidth = {'xs'}>
                 <DialogTitle id="form-dialog-title">Add Meeting Notes</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Notes Template:
-                    </DialogContentText>
-                    <Tooltip title={notesTemplateInfo?notesTemplateInfo.name:"<Click to select>"}>
-                        <TextField
-                            id="notesTemplate"
-                            size="medium"
-                            fullWidth
-                            
-                            value={notesTemplateInfo?notesTemplateInfo.name:"<Click to select>"}
-                            variant="outlined"
-                            
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                            onClick={handleChangeNotesTemplateButtonPressed}
-                        />
+                    <Tooltip title="Test">
+                        <DialogContentText>
+                            Notes Template:
+                        </DialogContentText>
+                    </Tooltip>
+                    <Tooltip title="Test 2">
+                    <TextField
+                        id="notesTemplate"
+                        size="medium"
+                        fullWidth
+                        
+                        value={notesTemplateInfo?notesTemplateInfo.name:"<Click to select>"}
+                        variant="outlined"
+                        
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        onClick={handleChangeNotesTemplateButtonPressed}
+                    />
+                    
                     </Tooltip>
                     <Box my={3}>
                     <DialogContentText>

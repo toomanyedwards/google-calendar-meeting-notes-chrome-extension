@@ -82,12 +82,6 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
               } else {
                 const errors = response.errors;
                 console.log(`addMeetingNotes errors: ${JSON.stringify(errors)}`);
-                errors.map(
-                  error => {
-                    console.log(`addMeetingNotes errors foo: ${error.toString()}`);
-                  }
-                )
-                
                 reject(errors);
               }
               resolve(response);

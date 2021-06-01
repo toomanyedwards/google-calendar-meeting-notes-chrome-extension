@@ -22,8 +22,14 @@ onGAPILoad = async () => {
   console.log("gapi initialized");
 
   await setGapiToken();
+  try{
+    await gapi.client.load("dsssd);
+    console.log("gapi client loaded");
+  }catch(e) {
+    console.log(`api.client.load error ${e.toString()}`);
+  }
 
-  await gapi.client.load('drive', 'v2');
+  //listFiles();
   
 }
 
@@ -137,7 +143,7 @@ const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTempl
   console.log(`handleAddNotesButtonClicked: ${meetingNotesTitle}`);
 
   
-  const token = await setGapiToken();
+  const token = setGapiToken();
   var errors = [];
   var fileId;
   try{
@@ -338,12 +344,26 @@ const getGoogleDocUrlForId = (googleFileId) => {
   return `https://docs.google.com/document/d/${googleFileId}/edit?usp=sharing`
 }
 
+function flatten(obj) {
+  var result = Object.create(obj);
+  for(var key in result) {
+      result[key] = result[key];
+  }
+  return result;
+}
+
 const listGoogleDrive = async (listParams) => {
   
+    console.log(`listGoogleDrive: listingFiles Fooz`);
     var filesList = [];
     try{
       do {
-        
+        if(!gapi.client.drive.files) {
+          console.log(`listGoogleDrive: listingFiles File api.client.drive.files not found`);
+        } else {
+          console.log(`listGoogleDrive: listingFiles File api.client.drive.files found`);
+        }
+
         const response = await gapi.client.drive.files.list(listParams);
         console.log(`listGoogleDrive: Page: ${JSON.stringify(response)}`);
         
@@ -359,6 +379,7 @@ const listGoogleDrive = async (listParams) => {
     catch(e) {
       console.log(`listGoogleDrive errors bizz: ${e.toString()}`);
       const errors = e.result.error.errors;
+      console.log(`listGoogleDrive errors foo: ${JSON.stringify(flatten(e))}`);
       console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
       throw errors;
     }

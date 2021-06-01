@@ -41,7 +41,7 @@ const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, t
 
     errors.map(
       error=> {
-        console.log(`SelectGoogleDriveResourceDialog: error: ${error.toString()}`);
+        console.log(`SelectGoogleDriveResourceDialog: error: ${error.toString()}`)
       }
     );
 

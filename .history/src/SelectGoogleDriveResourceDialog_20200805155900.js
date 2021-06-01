@@ -37,15 +37,7 @@ const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, t
   }
   
   const handleErrors = (errors) => {
-    console.log(`SelectGoogleDriveResourceDialog: errors: ${errors.toString()}`);  
-
-    errors.map(
-      error=> {
-        console.log(`SelectGoogleDriveResourceDialog: error: ${error.toString()}`);
-      }
-    );
-
-
+    console.log(`SelectGoogleDriveResourceDialog: errors:`);  
     setErrors([{message:"Error reading drive"}]);
   }
 

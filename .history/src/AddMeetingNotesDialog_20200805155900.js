@@ -13,8 +13,6 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import SelectGoogleDriveResourceDialog from './SelectGoogleDriveResourceDialog';
 import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
-
 
 
 const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTemplateInfo, defaultNotesDestinationInfo, open, setOpen, addMeetingNotes}) => {  
@@ -106,21 +104,21 @@ const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTem
                     <DialogContentText>
                         Notes Template:
                     </DialogContentText>
-                    <Tooltip title={notesTemplateInfo?notesTemplateInfo.name:"<Click to select>"}>
-                        <TextField
-                            id="notesTemplate"
-                            size="medium"
-                            fullWidth
-                            
-                            value={notesTemplateInfo?notesTemplateInfo.name:"<Click to select>"}
-                            variant="outlined"
-                            
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                            onClick={handleChangeNotesTemplateButtonPressed}
-                        />
-                    </Tooltip>
+                    <TextField
+                        id="notesTemplate"
+                        size="medium"
+                        fullWidth
+                        
+                        value={notesTemplateInfo?notesTemplateInfo.name:"<Click to select>"}
+                        variant="outlined"
+                        
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        onClick={handleChangeNotesTemplateButtonPressed}
+                    />
+                    
+                    
                     <Box my={3}>
                     <DialogContentText>
                         Notes Destination:

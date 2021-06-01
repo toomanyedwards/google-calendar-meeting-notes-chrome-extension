@@ -6,6 +6,44 @@ const CLIENT_ID="370393194814-avjjeu46inmjr38cku9312crolphgftt.apps.googleuserco
 const SCOPE=chrome.runtime.getManifest().oauth2.scopes.join(' ');
 const ADD_NOTES_BUTTON_CLICKED_MSG = "ADD_NOTES_BUTTON_CLICKED_MSG";
 
+/*
+
+Message received: {"type":"listGoogleDrive","listParams":{"orderBy":"folder, name","q":"'root' in parents and trashed=false and (mimeType='application/vnd.google-apps.folder' or mimeType='application/vnd.google-apps.document' )","fields":"nextPageToken, files(id, name, mimeType)"}}
+background.js:367 listGoogleDrive: listingFiles Fooz
+background.js:373 listGoogleDrive gapi.client.load error gapi.client.Error: La
+background.js:374 listGoogleDrive gapi.client.load error2 "gapi.client.Error: La"
+background.js:383 listGoogleDrive: listingFiles File api.client.drive.files found
+cb=gapi.loaded_0:221 Uncaught uB {message: "La", rM: true, stack: "gapi.client.Error: La↵    at new uB (https://apis.…pgmombdlemcndjbhmnhnbjdgcnmic/background.js:332:9"}
+(anonymous) @ cb=gapi.loaded_0:221
+setTimeout (async)
+_.gk @ cb=gapi.loaded_0:221
+(anonymous) @ cb=gapi.loaded_0:238
+Dk @ cb=gapi.loaded_0:230
+Promise.then (async)
+yk @ cb=gapi.loaded_0:230
+_.Ck @ cb=gapi.loaded_0:230
+Uk @ cb=gapi.loaded_0:237
+_.Ek.dh @ cb=gapi.loaded_0:236
+(anonymous) @ cb=gapi.loaded_0:231
+(anonymous) @ cb=gapi.loaded_0:1043
+_.Ek @ cb=gapi.loaded_0:231
+IC @ cb=gapi.loaded_0:1043
+listGoogleDrive @ background.js:370
+(anonymous) @ background.js:332
+cb=gapi.loaded_0:225 GET https://content.googleapis.com/drive/v3/files?orderBy=folder%2C%20name&q=%27root%27%20in%20parents%20and%20trashed%3Dfalse%20and%20(mimeType%3D%27application%2Fvnd.google-apps.folder%27%20or%20mimeType%3D%27application%2Fvnd.google-apps.document%27%20)&fields=nextPageToken%2C%20files(id%2C%20name%2C%20mimeType)&key=AIzaSyBHH78gDxV2O5N_F7ZKxz-E1SNOP82citw 401
+Ch @ cb=gapi.loaded_0:225
+g @ cb=gapi.loaded_0:225
+Dh @ cb=gapi.loaded_0:226
+(anonymous) @ cb=gapi.loaded_0:226
+d @ cb=gapi.loaded_0:164
+b @ cb=gapi.loaded_0:159
+background.js:399 listGoogleDrive errors bizz: [object Object]
+background.js:401 listGoogleDrive errors foo: {"result":{"error":{"errors":[{"domain":"global","reason":"authError","message":"Invalid Credentials","locationType":"header","location":"Authorization"}],"code":401,"message":"Invalid Credentials"}},"body":"{\n \"error\": {\n  \"errors\": [\n   {\n    \"domain\": \"global\",\n    \"reason\": \"authError\",\n    \"message\": \"Invalid Credentials\",\n    \"locationType\": \"header\",\n    \"location\": \"Authorization\"\n   }\n  ],\n  \"code\": 401,\n  \"message\": \"Invalid Credentials\"\n }\n}\n","headers":{"cache-control":"private, max-age=0","content-encoding":"gzip","content-length":"162","content-type":"application/json; charset=UTF-8","date":"Sun, 30 May 2021 03:15:41 GMT","expires":"Sun, 30 May 2021 03:15:41 GMT","server":"GSE","vary":"Origin, X-Origin","www-authenticate":"Bearer realm=\"https://accounts.google.com/\", error=invalid_token"},"status":401,"statusText":null}
+background.js:402 listGoogleDrive errors: [{"domain":"global","reason":"authError","message":"Invalid Credentials","locationType":"header","location":"Authorization"}]
+background.js:340 listGoogleDrive errors buzz: [object Object]
+background.js:341 listGoogleDrive errors: [{"domain":"global","reason":"authError","message":"Invalid Credentials","locationType":"header","location":"Authorization"}]
+*/
+
 /**
  * Initialize google api client
  */
@@ -22,8 +60,24 @@ onGAPILoad = async () => {
   console.log("gapi initialized");
 
   await setGapiToken();
+  /*try{
+    await gapi.client.load(DISCOVERY_DOCS);
+    console.log("gapi client loaded");
+  }catch(e) {
+    console.log(`gapi.client.load error ${e.toString()}`);
+    console.log(`gapi.client.load error2 ${JSON.stringify(e.toString())}`);
+  }
+  */
+  
+  /*gapi.client.load('drive', 'v2', function() {
+    console.log(`GOOGLE DRIVE LOADED!`)
+  });
+  */
 
   await gapi.client.load('drive', 'v2');
+  console.log(`GOOGLE DRIVE LOADED!`)
+
+  //listFiles();
   
 }
 
@@ -80,6 +134,10 @@ const deleteGoogleDriveFile = async (fileId) => {
     console.log(`deleteGoogleDriveFile errors: ${JSON.stringify(errors)}`);
     throw errors
   }
+}
+
+const logErrors = errors => {
+
 }
 
 const copyNotesDocTemplate = async (meetingNotesTitle, meetingNotesTemplate, meetingNotesFolder) => {
@@ -338,12 +396,45 @@ const getGoogleDocUrlForId = (googleFileId) => {
   return `https://docs.google.com/document/d/${googleFileId}/edit?usp=sharing`
 }
 
+function flatten(obj) {
+  var result = Object.create(obj);
+  for(var key in result) {
+      result[key] = result[key];
+  }
+  return result;
+}
+
+const retry = async (numberOfTimesToRetry, func, ...parms) => {
+  for (let i = 0; i < n; i++) {
+    try {
+      return await func(parms);
+    } catch {}
+  }
+
+  throw new Error(`Failed retrying ${n} times`);
+}
+
 const listGoogleDrive = async (listParams) => {
   
+    console.log(`listGoogleDrive: listingFiles Fooz`);
+
+    try{
+      await gapi.client.load(DISCOVERY_DOCS+"foo");
+      console.log("listGoogleDrive gapi client loaded");
+    }catch(e) {
+      console.log(`listGoogleDrive gapi.client.load error ${e.toString()}`);
+      console.log(`listGoogleDrive gapi.client.load error2 ${JSON.stringify(e.toString())}`);
+    }
+
     var filesList = [];
     try{
       do {
-        
+        if(!gapi.client.drive.files) {
+          console.log(`listGoogleDrive: listingFiles File api.client.drive.files not found`);
+        } else {
+          console.log(`listGoogleDrive: listingFiles File api.client.drive.files found`);
+        }
+
         const response = await gapi.client.drive.files.list(listParams);
         console.log(`listGoogleDrive: Page: ${JSON.stringify(response)}`);
         
@@ -359,6 +450,7 @@ const listGoogleDrive = async (listParams) => {
     catch(e) {
       console.log(`listGoogleDrive errors bizz: ${e.toString()}`);
       const errors = e.result.error.errors;
+      console.log(`listGoogleDrive errors foo: ${JSON.stringify(flatten(e))}`);
       console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
       throw errors;
     }
