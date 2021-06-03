@@ -106,23 +106,19 @@ const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTem
                     <DialogContentText>
                         Notes Template:
                     </DialogContentText>
-                    <Tooltip 
-                        disableFocusListener={true} 
-                        title={notesTemplateInfo?notesTemplateInfo.treePath:"Choose a notes template document"}
-                    >
+                    <Tooltip title={notesTemplateInfo?notesTemplateInfo.treePath:"<Click to select>"}>
                         <TextField
                             id="notesTemplate"
                             size="medium"
                             fullWidth
                             
-                            value={notesTemplateInfo?notesTemplateInfo.name:"<Click to change>"}
+                            value={notesTemplateInfo?notesTemplateInfo.name:"<Click to select>"}
                             variant="outlined"
                             
                             InputProps={{
                                 readOnly: true,
                             }}
                             onClick={handleChangeNotesTemplateButtonPressed}
-                            helperText="Click to change"
                         />
                     </Tooltip>
                     <Box my={3}>
@@ -130,22 +126,19 @@ const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTem
                             Notes Destination:
                         </DialogContentText>
                     
-                        <Tooltip 
-                            disableFocusListener={true} 
-                            title={notesDestinationInfo?notesDestinationInfo.treePath:"Choose the notes destination folder"}
-                        >
+                        <Tooltip title={notesDestinationInfo?notesDestinationInfo.treePath:"<Click to select>"}>
                             <TextField
                                 id="notesDestination"
                                 variant="outlined"
-                                value={notesDestinationInfo?notesDestinationInfo.name:"<Click to change>"}
+                                value={notesDestinationInfo?notesDestinationInfo.name:"<Click to select>"}
                                 fullWidth
                                 InputProps={{
                                     readOnly: true,
                                 }}
                                 onClick={handleChangeNotesDestinationButtonPressed}
-                                helperText="Click to change"
                             />
                         </Tooltip>
+                 
                     </Box>
                     <Box my={2}>
                         <FormLabel component="legend">Sharing</FormLabel>
@@ -159,7 +152,7 @@ const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTem
                         </RadioGroup>
                     </Box>
                 </DialogContent>
-                <DialogActions>
+                 <DialogActions>
                     <Button onClick={handleCancel} color="primary">Cancel</Button>
                     <Button disabled={!!!notesTemplateInfo || !!!notesDestinationInfo} onClick={handleAddMeetingNotesButtonPressed} color="primary">Add Notes</Button>
                 </DialogActions>

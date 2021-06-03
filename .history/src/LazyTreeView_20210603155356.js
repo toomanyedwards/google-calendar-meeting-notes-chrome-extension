@@ -166,11 +166,10 @@ const LazyTreeView = ({loadChildNodes, onSelectionChanged, allowParentNodeSelect
     const childNodeIds = [];
     childNodes.map( 
       childNode => {
-          
-          if(parentNode.id === ROOT_NODE_ID) {
-            childNode.treePath = `${childNode.name}`;
-          } else {
-            childNode.treePath = `${parentNode.treePath}>${childNode.name}`;
+          childNode.treePath = `${childNode.name}`;
+          if(parentNode.id != ROOT_NODE_ID) {
+            childNode.treePath 
+            childNode.treePath += `>${childNode.name}`;
           }
           nodeIdToNodeMap.set(childNode.id, childNode); 
           childNodeIds.push(childNode.id);

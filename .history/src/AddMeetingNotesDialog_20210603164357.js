@@ -106,10 +106,7 @@ const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTem
                     <DialogContentText>
                         Notes Template:
                     </DialogContentText>
-                    <Tooltip 
-                        disableFocusListener={true} 
-                        title={notesTemplateInfo?notesTemplateInfo.treePath:"Choose a notes template document"}
-                    >
+                    <Tooltip disableFocusListener={true} title={notesTemplateInfo?notesTemplateInfo.treePath:"Choose a notes template document"}>
                         <TextField
                             id="notesTemplate"
                             size="medium"
@@ -130,10 +127,7 @@ const AddMeetingNotesDialog = ({userDomain, defaultSharingLevel, defaultNotesTem
                             Notes Destination:
                         </DialogContentText>
                     
-                        <Tooltip 
-                            disableFocusListener={true} 
-                            title={notesDestinationInfo?notesDestinationInfo.treePath:"Choose the notes destination folder"}
-                        >
+                        <Tooltip title={notesDestinationInfo?notesDestinationInfo.treePath:"Choose the notes destination folder"}>
                             <TextField
                                 id="notesDestination"
                                 variant="outlined"

@@ -23,7 +23,10 @@ const SelectGoogleDriveResourceDialog = ({open, setOpen, onSelectionConfirmed, t
 
   const handleSelectionConfirmed = () => {
     onSelectionConfirmed(
-      selectionInfo
+      {
+        id: selectionInfo.id,
+        name: selectionInfo.name
+      }
     );
     setOpen(false);
   }
