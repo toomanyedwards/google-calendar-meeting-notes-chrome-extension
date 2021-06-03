@@ -144,7 +144,6 @@ const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTempl
     fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplate, meetingNotesFolder);
   }catch(copyFileErrors) {
     console.log(`handleAddNotesButtonClicked.copyFileErrors: ${JSON.stringify(copyFileErrors)}`);
-    console.log(`handleAddNotesButtonClicked.copyFileErrors 2: ${copyFileErrors.toString()}`);
     errors = errors.concat(copyFileErrors);
     throw errors;
   }
@@ -357,12 +356,8 @@ const listGoogleDrive = async (listParams) => {
       return filesList;
     }
     catch(e) {
-      console.log(`listGoogleDrive error: ${e.toString()}`);
-      const errors = e?.result?.error?.errors??[e];
-
+      const errors = e.result.error.errors;
       console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
-      console.log(`listGoogleDrive errors: ${errors.toString()}`);
-
       throw errors;
     }   
   }

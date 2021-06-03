@@ -5,7 +5,20 @@ const CLIENT_ID="370393194814-avjjeu46inmjr38cku9312crolphgftt.apps.googleuserco
 
 const SCOPE=chrome.runtime.getManifest().oauth2.scopes.join(' ');
 const ADD_NOTES_BUTTON_CLICKED_MSG = "ADD_NOTES_BUTTON_CLICKED_MSG";
-
+/*
+Message received: {"type":"listGoogleDrive","listParams":{"orderBy":"folder, name","q":"'root' in parents and trashed=false and (mimeType='application/vnd.google-apps.folder' )","fields":"nextPageToken, files(id, name, mimeType)"}}
+cb=gapi.loaded_0:225 GET https://content.googleapis.com/drive/v3/files?orderBy=folder%2C%20name&q=%27root%27%20in%20parents%20and%20trashed%3Dfalse%20and%20(mimeType%3D%27application%2Fvnd.google-apps.folder%27%20)&fields=nextPageToken%2C%20files(id%2C%20name%2C%20mimeType)&key=AIzaSyBHH78gDxV2O5N_F7ZKxz-E1SNOP82citw 401
+Ch @ cb=gapi.loaded_0:225
+g @ cb=gapi.loaded_0:225
+Dh @ cb=gapi.loaded_0:226
+(anonymous) @ cb=gapi.loaded_0:226
+d @ cb=gapi.loaded_0:164
+b @ cb=gapi.loaded_0:159
+background.js:360 listGoogleDrive errors bizz: [object Object]
+background.js:362 listGoogleDrive errors: [{"domain":"global","reason":"authError","message":"Invalid Credentials","locationType":"header","location":"Authorization"}]
+background.js:324 listGoogleDrive errors buzz: [object Object]
+background.js:325 listGoogleDrive errors: [{"domain":"global","reason":"authError","message":"Invalid Credentials","locationType":"header","location":"Authorization"}]
+*/
 /**
  * Initialize google api client
  */
@@ -144,7 +157,6 @@ const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTempl
     fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplate, meetingNotesFolder);
   }catch(copyFileErrors) {
     console.log(`handleAddNotesButtonClicked.copyFileErrors: ${JSON.stringify(copyFileErrors)}`);
-    console.log(`handleAddNotesButtonClicked.copyFileErrors 2: ${copyFileErrors.toString()}`);
     errors = errors.concat(copyFileErrors);
     throw errors;
   }
@@ -292,8 +304,9 @@ const setGoogleDriveFilePermissions = async (fileId, permissions) => {
  * Listen for messages from content script
  */
 chrome.extension.onMessage.addListener(
-  (message, sender, sendResponse) => {
+  async (message, sender, sendResponse) => {
     console.log(`Message received: ${JSON.stringify(message)}`);
+     // setGapiToken();
   
     switch(message.type) {
       case "addNotes":
@@ -313,24 +326,17 @@ chrome.extension.onMessage.addListener(
   
         break;
       case "listGoogleDrive":
-        listGoogleDrive(message.listParams). 
-        then(
-          (filesList) => {
-            console.log(`listGoogleDrive 1: ${filesList}`);
-            sendResponse({filesList});
-          }
-        ).catch(
-          (errors) => {
-            console.log(`listGoogleDrive errors buzz: ${errors.toString()}`);
-            console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
-            sendResponse({errors});
-          } 
-        );
-
-}
-
+        try{
+          const filesList = await listGoogleDrive(message.listParams);
+          sendResponse({filesList});
+        }
+        catch(errors) {  
+          console.log(`listGoogleDrive errors buzz: ${errors.toString()}`);
+          console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
+          sendResponse({errors});
+        } 
+    }
     return true;
-
   }
 );
 
@@ -352,18 +358,17 @@ const listGoogleDrive = async (listParams) => {
       }while(listParams.pageToken)
       
 
-      console.log(`listGoogleDrive filesList: ${JSON.stringify(filesList)}`);
+      console.log(`listGoogleDrive: ${JSON.stringify(filesList)}`);
 
       return filesList;
     }
     catch(e) {
-      console.log(`listGoogleDrive error: ${e.toString()}`);
-      const errors = e?.result?.error?.errors??[e];
-
+      console.log(`listGoogleDrive errors bizz: ${e.toString()}`);
+      const errors = e.result.error.errors;
       console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
-      console.log(`listGoogleDrive errors: ${errors.toString()}`);
-
       throw errors;
-    }   
+    }
+    console.log(`listGoogleDrive: listingFiles`);
+   
   }
    

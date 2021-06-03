@@ -361,7 +361,7 @@ const listGoogleDrive = async (listParams) => {
       const errors = e?.result?.error?.errors??[e];
 
       console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
-      console.log(`listGoogleDrive errors: ${errors.toString()}`);
+      console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
 
       throw errors;
     }   

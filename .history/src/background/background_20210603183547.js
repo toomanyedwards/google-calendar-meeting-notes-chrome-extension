@@ -358,11 +358,8 @@ const listGoogleDrive = async (listParams) => {
     }
     catch(e) {
       console.log(`listGoogleDrive error: ${e.toString()}`);
-      const errors = e?.result?.error?.errors??[e];
-
+      const errors = e.result.error.errors;
       console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
-      console.log(`listGoogleDrive errors: ${errors.toString()}`);
-
       throw errors;
     }   
   }

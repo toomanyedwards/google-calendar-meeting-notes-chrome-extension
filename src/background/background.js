@@ -144,6 +144,7 @@ const handleAddNotesButtonClicked = async ({meetingNotesTitle, meetingNotesTempl
     fileId = await copyNotesDocTemplate(meetingNotesTitle, meetingNotesTemplate, meetingNotesFolder);
   }catch(copyFileErrors) {
     console.log(`handleAddNotesButtonClicked.copyFileErrors: ${JSON.stringify(copyFileErrors)}`);
+    console.log(`handleAddNotesButtonClicked.copyFileErrors 2: ${copyFileErrors.toString()}`);
     errors = errors.concat(copyFileErrors);
     throw errors;
   }
@@ -293,7 +294,6 @@ const setGoogleDriveFilePermissions = async (fileId, permissions) => {
 chrome.extension.onMessage.addListener(
   (message, sender, sendResponse) => {
     console.log(`Message received: ${JSON.stringify(message)}`);
-     // setGapiToken();
   
     switch(message.type) {
       case "addNotes":
@@ -314,21 +314,21 @@ chrome.extension.onMessage.addListener(
         break;
       case "listGoogleDrive":
         listGoogleDrive(message.listParams). 
-            then(
-              (filesList) => {
-                console.log(`listGoogleDrive 1: ${filesList}`);
-                sendResponse({filesList});
-              }
-            ).catch(
-              (errors) => {
-                console.log(`listGoogleDrive errors buzz: ${errors.toString()}`);
-                console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
-                sendResponse({errors});
-              } 
-            );
+        then(
+          (filesList) => {
+            console.log(`listGoogleDrive 1: ${filesList}`);
+            sendResponse({filesList});
+          }
+        ).catch(
+          (errors) => {
+            console.log(`listGoogleDrive errors buzz: ${errors.toString()}`);
+            console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
+            sendResponse({errors});
+          } 
+        );
 
-    }
-    
+}
+
     return true;
 
   }
@@ -352,17 +352,18 @@ const listGoogleDrive = async (listParams) => {
       }while(listParams.pageToken)
       
 
-      console.log(`listGoogleDrive: ${JSON.stringify(filesList)}`);
+      console.log(`listGoogleDrive filesList: ${JSON.stringify(filesList)}`);
 
       return filesList;
     }
     catch(e) {
-      console.log(`listGoogleDrive errors bizz: ${e.toString()}`);
-      const errors = e.result.error.errors;
+      console.log(`listGoogleDrive error: ${e.toString()}`);
+      const errors = e?.result?.error?.errors??[e];
+
       console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
+      console.log(`listGoogleDrive errors: ${errors.toString()}`);
+
       throw errors;
-    }
-    console.log(`listGoogleDrive: listingFiles`);
-   
+    }   
   }
    
