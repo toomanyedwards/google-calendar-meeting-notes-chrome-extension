@@ -300,13 +300,12 @@ chrome.extension.onMessage.addListener(
         handleAddNotesButtonClicked(message).
           then( 
             (fileId)=>{
-              console.log(`handleAddNotesButtonClicked 1: ${fileId}`);
+              console.log(`addNotes fileId: ${fileId}`);
               sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
-              console.log(`handleAddNotesButtonClicked 2`);
             }
           ).catch(
             (errors) => {
-              console.log(`handleAddNotesButtonClicked 2 errors: ${JSON.stringify(errors)}`);
+              console.log(`addNotes errors: ${errors.toString()}`);
               sendResponse({errors});
             }
           );
@@ -316,13 +315,12 @@ chrome.extension.onMessage.addListener(
         listGoogleDrive(message.listParams). 
         then(
           (filesList) => {
-            console.log(`listGoogleDrive 1: ${filesList}`);
+            console.log(`listGoogleDrive fileList: ${filesList}`);
             sendResponse({filesList});
           }
         ).catch(
           (errors) => {
-            console.log(`listGoogleDrive errors buzz: ${errors.toString()}`);
-            console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
+            console.log(`listGoogleDrive errors: ${errors.toString()}`);
             sendResponse({errors});
           } 
         );
@@ -357,12 +355,8 @@ const listGoogleDrive = async (listParams) => {
       return filesList;
     }
     catch(e) {
-      console.log(`listGoogleDrive error: ${e.toString()}`);
       const errors = e?.result?.error?.errors??[e];
-
-      console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
       console.log(`listGoogleDrive errors: ${errors.toString()}`);
-
       throw errors;
     }   
   }

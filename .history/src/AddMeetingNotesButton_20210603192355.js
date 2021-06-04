@@ -115,8 +115,10 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
       setErrors(errors);
       console.log(`handleAddMeetingNotes errors: ${errors.toString()}`);
       setAddingMeetingNotes(false);
+      console.log(`handleAddMeetingNotes 2`);
 
       setErrorsDialogOpen(true);
+      console.log(`handleAddMeetingNotes 3`);
     }
     finally{
       setAddingMeetingNotes(false);

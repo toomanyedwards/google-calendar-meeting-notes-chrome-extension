@@ -24,7 +24,7 @@ export const setChromeStorageSyncData = data => {
             chrome.storage.sync.set(
                 data,
                 () => {
-                    console.log(`Data set: ${JSON.stringify(data)}`);
+                    console.log(`Data set: ${data}`);
                     resolve();
                 }
             )  

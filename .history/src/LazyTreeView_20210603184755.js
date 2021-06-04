@@ -152,7 +152,8 @@ const LazyTreeView = ({loadChildNodes, onSelectionChanged, allowParentNodeSelect
       childNodes = (parentNodeId === ROOT_NODE_ID)?await loadChildNodes():await loadChildNodes(parentNodeId);
     }
     catch(errors) {
-      console.log(`LazyTreeView: addNodeChildren: errors: ${errors.toString()}`);
+      console.log(`LazyTreeView: addNodeChildren: Errors: ${JSON.stringify(errors)}`);
+      console.log(`LazyTreeView: addNodeChildren: Errors 2: ${errors.toString()}`);
       handleErrors(errors);
       return;
     }

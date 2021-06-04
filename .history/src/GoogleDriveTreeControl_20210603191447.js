@@ -30,7 +30,7 @@ const GoogleDriveTreeControl = ({onSelectionChanged, allowFolderSelection=false,
   }
 
   const handleErrors = (errors) => {
-    console.log(`GoogleDriveTreeControl: errors: ${errors.toString()}`);
+    console.log(`GoogleDriveTreeControl: errors: ${errors.toString()}}`);
     setErrors(errors);
     onErrors(errors)
   }

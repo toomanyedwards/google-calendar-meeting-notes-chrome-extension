@@ -30,7 +30,7 @@ const GoogleDriveTreeControl = ({onSelectionChanged, allowFolderSelection=false,
   }
 
   const handleErrors = (errors) => {
-    console.log(`GoogleDriveTreeControl: errors: ${errors.toString()}`);
+    console.log(`GoogleDriveTreeControl: errors: ${JSON.stringify(errors)}}`);
     setErrors(errors);
     onErrors(errors)
   }
@@ -73,7 +73,7 @@ const listGoogleDrive = (folderId="root", mimeTypes) => {
               resolve(response.filesList);
             } else {
               const errors = response.errors;
-              console.log(`listGoogleDrive errors: ${errors.toString()}`);
+              console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
               reject(errors);
             }
             resolve(response);

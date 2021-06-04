@@ -300,12 +300,13 @@ chrome.extension.onMessage.addListener(
         handleAddNotesButtonClicked(message).
           then( 
             (fileId)=>{
-              console.log(`addNotes fileId: ${fileId}`);
+              console.log(`handleAddNotesButtonClicked 1: ${fileId}`);
               sendResponse({meetingNotesDocUrl: getGoogleDocUrlForId(fileId)});
+              console.log(`handleAddNotesButtonClicked 2`);
             }
           ).catch(
             (errors) => {
-              console.log(`addNotes errors: ${errors.toString()}`);
+              console.log(`handleAddNotesButtonClicked 2 errors: ${JSON.stringify(errors)}`);
               sendResponse({errors});
             }
           );
@@ -315,12 +316,13 @@ chrome.extension.onMessage.addListener(
         listGoogleDrive(message.listParams). 
         then(
           (filesList) => {
-            console.log(`listGoogleDrive fileList: ${filesList}`);
+            console.log(`listGoogleDrive 1: ${filesList}`);
             sendResponse({filesList});
           }
         ).catch(
           (errors) => {
-            console.log(`listGoogleDrive errors: ${errors.toString()}`);
+            console.log(`listGoogleDrive errors buzz: ${errors.toString()}`);
+            console.log(`listGoogleDrive errors: ${JSON.stringify(errors)}`);
             sendResponse({errors});
           } 
         );

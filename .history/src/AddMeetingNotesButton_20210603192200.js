@@ -101,11 +101,11 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
 
 
   const handleAddMeetingNotes = async (meetingNotesConfig) => {
-  
+    console.log(`handleAddMeetingNotes 1`);
     setAddMeetingNotesDialogOpen(false);
-  
+    console.log(`handleAddMeetingNotes 2`);
     setAddingMeetingNotes(true);
-  
+    console.log(`handleAddMeetingNotes 3`);
     try{
       await addMeetingNotes(meetingNotesConfig);
       // If successful, set the config as the new default
@@ -113,10 +113,12 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
 
     }catch(errors){
       setErrors(errors);
-      console.log(`handleAddMeetingNotes errors: ${errors.toString()}`);
+      console.log(`handleAddMeetingNotes errors: ${JSON.stringify(errors)}`);
       setAddingMeetingNotes(false);
+      console.log(`handleAddMeetingNotes 2`);
 
       setErrorsDialogOpen(true);
+      console.log(`handleAddMeetingNotes 3`);
     }
     finally{
       setAddingMeetingNotes(false);
