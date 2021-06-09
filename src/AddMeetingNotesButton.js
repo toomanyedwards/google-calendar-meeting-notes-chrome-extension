@@ -19,7 +19,6 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
       const initializeDefaults = async() => {
         const defaultConfig = await getChromeStorageSyncData();
         if(!defaultConfig.sharing) {
-        //if(true) {
           setConfig(
             {
               sharing: {
@@ -39,21 +38,6 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
   );
       
   const openAddMeetingNotesDialog = async () => {
-    console.log("openAddMeetingNotesDialog 1");
-/*
-    var data; 
-    await clearChromeStorageSyncData();
-    data = await getChromeStorageSyncData(null);
-    console.log(`cleared data: ${JSON.stringify(data)}`);
-    await setChromeStorageSyncData({foo:"bar", buzz:"bazz"});
-    data = await getChromeStorageSyncData(null);
-    console.log(`all data: ${JSON.stringify(data)}`);
-    await removeChromeStorageSyncData("buzz");
-    data = await getChromeStorageSyncData(null);
-    console.log(`removed buzz: ${JSON.stringify(data)}`);
-
-    console.log(`openAddMeetingNotesDialog 1.5: ${JSON.stringify(data)}`);
-    console.log("openAddMeetingNotesDialog 2");*/
     setAddMeetingNotesDialogOpen(true);
   };
 
@@ -67,10 +51,6 @@ const AddMeetingNotesButton = ({className, userDomain, meetingDescriptionEl, get
             meetingNotesTitle: meetingTitle + " Notes",
             meetingNotesTemplate: notesTemplateInfo,
             meetingNotesFolder: notesDestinationInfo,
-
-            // google
-            //meetingNotesTemplateId: "1bAoZmcWXQnofin2esddfdTWB0Ko0MkNJBsQPpS9SZS4",
-            //meetingNotesFolderId: " 1TNkioETxxx10b9Ikg0D0bZVbVSnW8XZt",
             meetingNotesSharing:sharing
           }, 
           response => {
