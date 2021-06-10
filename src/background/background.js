@@ -1,5 +1,4 @@
 
-import '../gapiUtils.js';
 
 
 const API_KEY = 'AIzaSyBHH78gDxV2O5N_F7ZKxz-E1SNOP82citw';
